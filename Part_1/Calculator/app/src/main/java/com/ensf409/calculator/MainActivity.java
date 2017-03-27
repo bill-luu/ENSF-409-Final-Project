@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     public void setupView()
     {
     	valueTextView = (TextView)findViewById(R.id.ValueTextView);
-
         //Initialize Buttons
         oneButton = (Button)findViewById(R.id.OneButton);
         twoButton = (Button)findViewById(R.id.TwoButton);
@@ -68,119 +67,119 @@ public class MainActivity extends AppCompatActivity {
         //TODO - Complete definition of ActionListeners
         oneButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public  void onClick(View view){
+            public void onClick(View view){
                 
             }
         });
 
         twoButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public  void onClick(View view){
+            public void onClick(View view){
                 
             }
         });
 
         threeButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public  void onClick(View view){
+            public void onClick(View view){
                 
             }
         });
 
         fourButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public  void onClick(View view){
+            public void onClick(View view){
                 
             }
         });
 
         fiveButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public  void onClick(View view){
+            public void onClick(View view){
                 
             }
         });
 
         sixButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public  void onClick(View view){
+            public void onClick(View view){
                 
             }
         });
 
         sevenButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public  void onClick(View view){
+            public void onClick(View view){
                 
             }
         });
 
         eightButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public  void onClick(View view){
+            public void onClick(View view){
                 
             }
         });
 
         nineButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public  void onClick(View view){
+            public void onClick(View view){
                 
             }
         });
 
         zeroButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public  void onClick(View view){
+            public void onClick(View view){
                 
             }
         });
 
         addButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public  void onClick(View view){
+            public void onClick(View view){
                 
             }
         });
 
         minusButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public  void onClick(View view){
+            public void onClick(View view){
                 
             }
         });
 
         divideButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public  void onClick(View view){
+            public void onClick(View view){
                 
             }
         });
 
         multiplyButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public  void onClick(View view){
+            public void onClick(View view){
                 
             }
         });
 
         decimalButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public  void onClick(View view){
+            public void onClick(View view){
                 
             }
         });
 
         clearButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public  void onClick(View view){
+            public void onClick(View view){
                 
             }
         });
 
         equalsButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public  void onClick(View view){
+            public void onClick(View view){
 
             }
         });
