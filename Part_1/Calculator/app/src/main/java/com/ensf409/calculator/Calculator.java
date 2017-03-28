@@ -62,8 +62,12 @@ public class Calculator {
 		if(divZeroErr || formatErr)
 			return toDisplay;
 		double asDouble = (double)num;
+		if (beforeDec >= 9)
+		{
+			return toDisplay;
+		}
 		//if decimal has been used on current number
-		if(afterDec!= 0){
+		else if(afterDec!= 0){
 			//compute arithmetic for currentNumber
 			currentNumber += asDouble*Math.pow(10, (afterDec));
 			//this code is to produce a proper string toDisplay just in case 0's have been pressed after decimal place
@@ -78,17 +82,13 @@ public class Calculator {
 		}
 		//if decimal has not been used on currentNumber
 		else{
-			if (beforeDec >= 9)
-			{
-				return toDisplay;
-			}
 			//compute arithmetic for currentNumber
 			currentNumber = (currentNumber*10) + asDouble;
 			toDisplay = Integer.toString((int)currentNumber.doubleValue());
-			beforeDec++;
 
 		}
 		//set lastReceived to 'N' notifying a number was entered last
+		beforeDec++;
 		lastReceived = 'N';
 		return toDisplay;
 	}
