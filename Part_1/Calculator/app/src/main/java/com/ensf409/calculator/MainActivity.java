@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
         decimalButton = (Button)findViewById((R.id.DecimalButton));
 
         //Add listeners
-        //TODO - Complete definition of ActionListeners
         oneButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
