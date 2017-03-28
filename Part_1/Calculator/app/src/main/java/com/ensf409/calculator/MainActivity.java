@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         final Calculator calc = new Calculator();
 
     	valueTextView = (TextView)findViewById(R.id.ValueTextView);
-        valueTextView.setText("");
         //Initialize Buttons
         oneButton = (Button)findViewById(R.id.OneButton);
         twoButton = (Button)findViewById(R.id.TwoButton);
