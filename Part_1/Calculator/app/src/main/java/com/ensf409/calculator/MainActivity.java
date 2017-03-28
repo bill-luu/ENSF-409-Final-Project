@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
 		private Button equalsButton;
         private Button decimalButton;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +45,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void setupView()
     {
+        final Calculator calc = new Calculator();
+
     	valueTextView = (TextView)findViewById(R.id.ValueTextView);
+        valueTextView.setText("");
         //Initialize Buttons
         oneButton = (Button)findViewById(R.id.OneButton);
         twoButton = (Button)findViewById(R.id.TwoButton);
@@ -68,119 +73,119 @@ public class MainActivity extends AppCompatActivity {
         oneButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed(1));
             }
         });
 
         twoButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed(2));
             }
         });
 
         threeButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed(3));
             }
         });
 
         fourButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed(4));
             }
         });
 
         fiveButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed(5));
             }
         });
 
         sixButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed(6));
             }
         });
 
         sevenButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed(7));
             }
         });
 
         eightButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed(8));
             }
         });
 
         nineButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed(9));
             }
         });
 
         zeroButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed(0));
             }
         });
 
         addButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed('+'));
             }
         });
 
         minusButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed('-'));
             }
         });
 
         divideButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed('/'));
             }
         });
 
         multiplyButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed('*'));
             }
         });
 
         decimalButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed('.'));
             }
         });
 
         clearButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed('C'));
             }
         });
 
         equalsButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-
+                valueTextView.setText(calc.ButtonPressed('='));
             }
         });
     }
