@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 		private Button minusButton;
 		private Button equalsButton;
         private Button decimalButton;
-
+        private Calculator calc;
 
 
     @Override
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void setupView()
     {
-        final Calculator calc = new Calculator();
+        calc = new Calculator();
 
     	valueTextView = (TextView)findViewById(R.id.ValueTextView);
         //Initialize Buttons
