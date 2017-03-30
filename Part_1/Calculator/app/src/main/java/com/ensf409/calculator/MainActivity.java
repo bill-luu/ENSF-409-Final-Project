@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 		private Button equalsButton;
         private Button decimalButton;
         private Calculator calc;
+        final int MAX_INT_SIZE = 11;
 
 
     @Override
@@ -42,6 +43,18 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setupView();
+    }
+
+    public void checkTextSize()
+    {
+        if(valueTextView.getText().length() > MAX_INT_SIZE)
+        {
+            valueTextView.setTextSize(20);
+        }
+        else
+        {
+            valueTextView.setTextSize(50);
+        }
     }
 
     public void setupView()
@@ -73,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 valueTextView.setText(calc.ButtonPressed(1));
+                checkTextSize();
             }
         });
 
@@ -80,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 valueTextView.setText(calc.ButtonPressed(2));
+                checkTextSize();
             }
         });
 
@@ -87,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 valueTextView.setText(calc.ButtonPressed(3));
+                checkTextSize();
             }
         });
 
@@ -101,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 valueTextView.setText(calc.ButtonPressed(5));
+                checkTextSize();
             }
         });
 
@@ -108,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 valueTextView.setText(calc.ButtonPressed(6));
+                checkTextSize();
             }
         });
 
@@ -115,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 valueTextView.setText(calc.ButtonPressed(7));
+                checkTextSize();
             }
         });
 
@@ -122,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 valueTextView.setText(calc.ButtonPressed(8));
+                checkTextSize();
             }
         });
 
@@ -129,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 valueTextView.setText(calc.ButtonPressed(9));
+                checkTextSize();
             }
         });
 
@@ -136,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 valueTextView.setText(calc.ButtonPressed(0));
+                checkTextSize();
             }
         });
 
@@ -143,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 valueTextView.setText(calc.ButtonPressed('+'));
+                checkTextSize();
             }
         });
 
@@ -150,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 valueTextView.setText(calc.ButtonPressed('-'));
+                checkTextSize();
             }
         });
 
@@ -157,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 valueTextView.setText(calc.ButtonPressed('/'));
+                checkTextSize();
             }
         });
 
@@ -164,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 valueTextView.setText(calc.ButtonPressed('*'));
+                checkTextSize();
             }
         });
 
@@ -171,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 valueTextView.setText(calc.ButtonPressed('.'));
+                checkTextSize();
             }
         });
 
@@ -178,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 valueTextView.setText(calc.ButtonPressed('C'));
+                checkTextSize();
             }
         });
 
@@ -185,6 +213,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 valueTextView.setText(calc.ButtonPressed('='));
+                checkTextSize();
             }
         });
     }

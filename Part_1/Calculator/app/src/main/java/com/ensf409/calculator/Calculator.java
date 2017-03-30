@@ -132,6 +132,7 @@ public class Calculator {
 				toDisplay = "";
 				divZeroErr = false;
 				formatErr = false;
+                lastReceived = 'C';
 				break;
 
 			case '.':
@@ -166,7 +167,9 @@ public class Calculator {
 					numbers.add(lastSum);
 					//if 'C' was just entered, do nothing and show a blank screen still
 				else if (lastReceived == 'C')
-					break;
+				{
+                    break;
+                }
 					//in the case where none of the above occur ('N' or '.'), add currentNumber
 					//to numbers and reset currentNumber & afterDec to be ready for new number input
 				else {
