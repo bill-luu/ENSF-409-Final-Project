@@ -39,20 +39,26 @@ public class Calculator {
 		while(!numbers.isEmpty()){//while there are still numbers to pop, keep poppin'
 			char op = operations.pop();
 			Double num = numbers.pop();
-			if (op == '+')
-				sum += num;
-			else if (op == '-')
-				sum -= num;
-			else if (op == '*')
-				sum *= num;
-			else if (op == '/'){
-				//if a divide by zero is attempted, make note of it
-				if(num == 0) {
-					divZeroErr = true;
-					toDisplay = "Divide by Zero Error";
-				}
-				sum /= num;
-			}
+            switch(op)
+            {
+                case '+':
+                    sum += num;
+                    break;
+			    case '-':
+                    sum -= num;
+                    break;
+                case '*':
+                    sum *= num;
+                    break;
+                case '/':
+                    //if a divide by zero is attempted, make note of it
+                    if (num == 0) {
+                        divZeroErr = true;
+                        toDisplay = "Divide by Zero Error";
+                    }
+                    sum /= num;
+                    break;
+            }
 		}
 		lastSum = sum;
 	}
