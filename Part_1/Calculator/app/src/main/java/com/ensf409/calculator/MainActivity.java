@@ -1,5 +1,6 @@
 package com.ensf409.calculator;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -31,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
 		private Button minusButton;
 		private Button equalsButton;
         private Button decimalButton;
+        private Calculator calc;
+        final int MAX_INT_SIZE = 11;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +45,22 @@ public class MainActivity extends AppCompatActivity {
         setupView();
     }
 
+    public void checkTextSize()
+    {
+        if(valueTextView.getText().length() > MAX_INT_SIZE)
+        {
+            valueTextView.setTextSize(20);
+        }
+        else
+        {
+            valueTextView.setTextSize(50);
+        }
+    }
+
     public void setupView()
     {
+        calc = new Calculator();
+
     	valueTextView = (TextView)findViewById(R.id.ValueTextView);
         //Initialize Buttons
         oneButton = (Button)findViewById(R.id.OneButton);
@@ -64,123 +82,138 @@ public class MainActivity extends AppCompatActivity {
         decimalButton = (Button)findViewById((R.id.DecimalButton));
 
         //Add listeners
-        //TODO - Complete definition of ActionListeners
         oneButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed(1));
+                checkTextSize();
             }
         });
 
         twoButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed(2));
+                checkTextSize();
             }
         });
 
         threeButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed(3));
+                checkTextSize();
             }
         });
 
         fourButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed(4));
             }
         });
 
         fiveButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed(5));
+                checkTextSize();
             }
         });
 
         sixButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed(6));
+                checkTextSize();
             }
         });
 
         sevenButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed(7));
+                checkTextSize();
             }
         });
 
         eightButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed(8));
+                checkTextSize();
             }
         });
 
         nineButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed(9));
+                checkTextSize();
             }
         });
 
         zeroButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed(0));
+                checkTextSize();
             }
         });
 
         addButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed('+'));
+                checkTextSize();
             }
         });
 
         minusButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed('-'));
+                checkTextSize();
             }
         });
 
         divideButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed('/'));
+                checkTextSize();
             }
         });
 
         multiplyButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed('*'));
+                checkTextSize();
             }
         });
 
         decimalButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed('.'));
+                checkTextSize();
             }
         });
 
         clearButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                
+                valueTextView.setText(calc.ButtonPressed('C'));
+                checkTextSize();
             }
         });
 
         equalsButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-
+                valueTextView.setText(calc.ButtonPressed('='));
+                checkTextSize();
             }
         });
     }
