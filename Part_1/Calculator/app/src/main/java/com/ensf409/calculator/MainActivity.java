@@ -1,9 +1,6 @@
 package com.ensf409.calculator;
 
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -11,6 +8,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
+
+/*
+* ENSF 409 Final Project
+* MainACtivity.java
+* Mark Danez Ricale, Travis Manchee, Bill Luu
+* March 31st, 2017
+ */
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 		private Button minusButton;
 		private Button equalsButton;
         private Button decimalButton;
+        private Button negativeButton;
         private Calculator calc;
         final int MAX_INT_SIZE = 11;
 
@@ -80,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
 		minusButton = (Button)findViewById(R.id.MinusButton);
 		equalsButton = (Button)findViewById(R.id.EqualsButton);
         decimalButton = (Button)findViewById((R.id.DecimalButton));
+        negativeButton = (Button)findViewById((R.id.NegativeButton));
 
         //Add listeners
         oneButton.setOnClickListener(new View.OnClickListener(){
@@ -213,6 +219,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 valueTextView.setText(calc.ButtonPressed('='));
+                checkTextSize();
+            }
+        });
+
+        negativeButton.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View view)
+            {
+                valueTextView.setText(calc.ButtonPressed('S'));
                 checkTextSize();
             }
         });
