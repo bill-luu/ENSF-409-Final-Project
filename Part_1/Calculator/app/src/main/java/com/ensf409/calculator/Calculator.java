@@ -1,6 +1,12 @@
 package com.ensf409.calculator;
 import java.text.DecimalFormat;
 import java.util.LinkedList;
+/*
+* ENSF 409 Final Project
+* Calculator.java
+* Mark Danez Ricale, Travis Manchee, Bill Luu
+* March 31st, 2017
+ */
 
 public class Calculator {
 	private LinkedList<Double> numbers;//holds all numbers in order for current calculation
