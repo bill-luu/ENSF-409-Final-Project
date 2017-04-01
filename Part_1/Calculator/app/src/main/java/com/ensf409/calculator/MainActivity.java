@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 		private Button minusButton;
 		private Button equalsButton;
         private Button decimalButton;
+        private Button negativeButton;
         private Calculator calc;
         final int MAX_INT_SIZE = 11;
 
@@ -80,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
 		minusButton = (Button)findViewById(R.id.MinusButton);
 		equalsButton = (Button)findViewById(R.id.EqualsButton);
         decimalButton = (Button)findViewById((R.id.DecimalButton));
+        negativeButton = (Button)findViewById((R.id.NegativeButton));
 
         //Add listeners
         oneButton.setOnClickListener(new View.OnClickListener(){
@@ -213,6 +215,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 valueTextView.setText(calc.ButtonPressed('='));
+                checkTextSize();
+            }
+        });
+
+        negativeButton.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View view)
+            {
+                valueTextView.setText(calc.ButtonPressed('S'));
                 checkTextSize();
             }
         });

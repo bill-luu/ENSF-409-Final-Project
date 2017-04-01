@@ -159,7 +159,12 @@ public class Calculator {
 					lastReceived = ch;
 				}
 				break;
-
+			case 'S':
+				if(lastReceived == 'N' && currentNumber != 0) {
+					currentNumber *= -1;
+					toDisplay = Double.toString(currentNumber);
+				}
+				break;
 			default:
 				//if divZeroErr or formatErr has occurred, "lock out" method until 'C' has been pressed
 				if (divZeroErr || formatErr)
