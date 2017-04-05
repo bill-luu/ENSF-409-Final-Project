@@ -24,13 +24,13 @@ public class Server {
 	
 	public Server()
 	{
-		
+		initializeConnection();
 	}
 	
 	public void initializeConnection()
 	{
 		try {
-				connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/ex4schmea", "root", "PASSWORD");
+				connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/airlinedatabase", "root", "PASSWORD");
 			} catch (SQLException e) {
 			e.printStackTrace();
 			System.exit(1);
