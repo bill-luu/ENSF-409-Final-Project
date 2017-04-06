@@ -10,6 +10,7 @@ public class Passenger {
     private BufferedReader socketIn;
     private OutputFileStream outputStream;
     private InputFileStream inputStream;
+    private Flight[] receivedFlights;
 
 
     public Passenger(String serverName, int portNumber) {
@@ -30,13 +31,15 @@ public class Passenger {
         String response = "";
 
         try {
-            socketOut.println(param);
-            socketOut.println(key);
+            socketOut.println("SEARCHFLIGHT_" + param + "_" + key);
             response = socketIn.readLine();
 
-            if (!response.equals("nofind")) {
-                return response;
-            } else {
+            if (!response.equals("GOOD")) {
+                inputStream = ObjectInputStream(socket.getInputStream());
+                receivedFlights = (Flight[]) inputStream.readObject();
+                return "GOOD";
+            }
+            else {
                 return "The flight you were looking for could not be found";
             }
         } catch (IOException e) {
@@ -49,45 +52,51 @@ public class Passenger {
         String response = "";
 
         try {
-            socketOut.println("getflights");
+            socketOut.println("GETFLIGHTS_");
 
-            while (!response.equals("end")) {
-                response = socketIn.readLine();
+            if (!response.equals("GOOD")) {
+                inputStream = ObjectInputStream(socket.getInputStream());
+                receivedFlights = (Flight[]) inputStream.readObject();
+                return "GOOD";
             }
-        }
-        catch (IOException e){
+            else {
+                return "The flight you were looking for could not be found";
+            }
+        } catch (IOException e) {
             System.err.println(e.getStackTrace());
         }
+        return "There's been an error in code, please fix it";
     }
 
     void bookTicket(String nameA, String flightNumber) {
         String response = "";
 
         try {
-            socketOut.println("bookflight");
-            socketOut.println(flightNumber);
-            response = socketIn.readLine();
-
-            if (!response.equals("allbooked")) {
-                System.out.println("Booked Succesfully!");
+            socketOut.println("BOOK_");
+            sif (!response.equals("GOOD")) {
+                inputStream = ObjectInputStream(socket.getInputStream());
+                Ticket printedTicket = (Ticket) inputStream.readObject();
+                printTicket(printedTicket);
+                return "GOOD";
+            } else {
+                return "The flight you were looking for could not be found";
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.err.println(e.getStackTrace());
         }
+        return "There's been an error in code, please fix it";
     }
-
 
     public void printTicket(Ticket ticketA) {
         String ticketFirstName, ticketLastName, ticketFlightNumber, ticketSource, ticketDestination, ticketDate, ticketTime, ticketDuration, ticketPrice;
 
-        ticketWriter = new PrintWriter(ticketFlightNumber + "ticket.txt");
+        ticketWriter = new PrintWriter("Flight" + ticketFlightNumber + "-ticket.txt");
         ticketWriter.printf("%5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s", "First Name", "Last Name", "Flight #", "Starting Destionation", "Final Destination", "Date of Departure", "Time of Departure", "Duration of Flight", "Total Price of FLight" );
-        ticketWriter.printf("%5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s", "First Name", "Last Name", "Flight #", "Starting Destionation", "Final Destination", "Date of Departure", "Time of Departure", "Duration of Flight", "Total Price of FLight" ); //To be changed soon
+        ticketWriter.printf("%5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s", ticketA.firstName, ticketA.lastName, ticketA.flightNumber, ticketA.source, ticketA.destination, , ticketA.dateOfFlight, ticketA.durationOfFlight, ticketA.price );
         ticketWriter.close();
     }
 
-    public boolean checkFormatFlight() {
-        return true;
+    public String checkFormat(Ticket ticketA) {
+        //To be discussed tommorow
     }
 }
