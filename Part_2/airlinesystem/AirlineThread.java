@@ -50,7 +50,6 @@ public class AirlineThread implements Runnable {
 			try {
 				String[] response = socketInput.readLine().split("_");
 				switch(response[0]){
-				//TODO: responses to each string. Figure out how to break end process.
 					case "SEARCHFLIGHT":
 						if(isValidResponse(response, 4))
 						{
@@ -72,7 +71,7 @@ public class AirlineThread implements Runnable {
 							String firstName = response[2];
 							String lastName = response[3];
 							//Output a ticket
-							Ticket newTicket = new Ticket(database.getFlight(flightId), flightid, firstName, lastName);
+							Ticket newTicket = new Ticket(database.getFlight(flightId), flightId, firstName, lastName);
 							database.addTicket(newTicket);
 							outputObject.writeObject(newTicket);
 						}
@@ -80,9 +79,16 @@ public class AirlineThread implements Runnable {
 					case "ADDFLIGHT":
 						if(isValidResponse(response, 1))
 						{
-							Thread.sleep(1000); //Wait to make sure the socket has sent the flight object
+							try {
+								Thread.sleep(1000);
+							 //Wait to make sure the socket has sent the flight object
 							Flight flight = (Flight) inputObject.readObject();
 							socketOutput.println(database.addFlight(flight));
+							}
+							catch(Exception e)
+							{
+								e.printStackTrace();
+							}
 						}
 						break;
 					case "DELETE":
@@ -116,10 +122,16 @@ public class AirlineThread implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		socketInput.close();
-		inputObject.close();
-		outputObject.close();
-		socket.close();		
+		try{
+			socketInput.close();
+			inputObject.close();
+			outputObject.close();
+			socket.close();	
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 }

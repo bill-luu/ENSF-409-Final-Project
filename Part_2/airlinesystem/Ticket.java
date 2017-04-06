@@ -1,4 +1,4 @@
-package Final_Project;
+package airlinesystem;
 
 public class Ticket extends Flight {
 	private String ticketId;

@@ -1,4 +1,4 @@
-package Final_Project;
+package airlinesystem;
 
 import java.awt.EventQueue;
 
@@ -35,6 +35,7 @@ import javax.swing.SwingConstants;
 import javax.swing.JTextPane;
 import javax.swing.border.LineBorder;
 import javax.swing.border.SoftBevelBorder;
+
 import java.awt.GridLayout;
 import javax.swing.ListSelectionModel;
 

@@ -1,9 +1,5 @@
 package airlinesystem;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Database {
 	int uniqueFlightId;
@@ -53,14 +48,14 @@ public class Database {
 			
 			while(rs.next()) //Get the highest flight ID
 			{
-				Flight flight = new Flight(rs.getInt("flightnumber"), rs.getString("destlocation"),
+				Flight flight = new Flight(rs.getString("flightnumber"), rs.getString("destlocation"),
 						   rs.getString("sourcelocation"), rs.getString("date"),
 						   rs.getString("time"), rs.getString("duration"),
 						   rs.getString("totalseats"), rs.getString("remainingseats"),
 						   rs.getString("price")) ;
 				
-				if(uniqueFlightId < flight.getId())
-					uniqueFlightId = flight.getId();
+				if(uniqueFlightId < Integer.parseInt(flight.getFlightId()))
+					uniqueFlightId = Integer.parseInt(flight.getFlightId());
 			}
 			uniqueFlightId++; //To make sure the ID is unique
 		}
@@ -79,11 +74,10 @@ public class Database {
 
 			while(rs.next())
 			{
-				Ticket ticket = new Ticket(rs.getInt("ticketid"), rs.getString("flightid"),
-										   rs.getString("firstname"), rs.getString("lastname"),
-										   rs.getString("date"), rs.getString("price"));
-				if(uniqueTicketId < ticket.getId())
-					uniqueTicketId = ticket.getId();
+				Flight f = getFlight(rs.getString("flightid"));
+				Ticket ticket = new Ticket(f, rs.getString("ticketid"), rs.getString("firstname"), rs.getString("lastname"));
+				if(uniqueTicketId < Integer.parseInt(ticket.getFlightId()))
+					uniqueTicketId = Integer.parseInt(ticket.getFlightId());
 			}
 			uniqueTicketId++;
 		}
@@ -101,7 +95,7 @@ public class Database {
 
 			query = "SELECT * FROM flights WHERE" + param + " = '" + key + "'";
 			rs = stmt.executeQuery(query);
-			ArrayList<Flight> flightList = new ArrayList();
+			ArrayList<Flight> flightList = new ArrayList<Flight>();
 			
 			while(rs.next())
 			{
@@ -131,7 +125,7 @@ public class Database {
 
 			rs = stmt.executeQuery(query);
 
-			ArrayList<Flight> flightList = new ArrayList();
+			ArrayList<Flight> flightList = new ArrayList<Flight>();
 			
 			while(rs.next())
 			{
@@ -155,26 +149,32 @@ public class Database {
 
 	synchronized void changeSeats(Flight flight, int changeInRemainingSeats)
 	{
-		String prep = "UPDATE flights "
-					+ "SET destlocation= ?"
-					+ ", sourcelocation= ?"
-					+ ", date= ?"
-					+ ", time= ?"
-					+ ", duration= ?"
-					+ ", totalseats= ? "
-					+ ", remainingseats= ?"
-					+ ", price= ?"
-					+ "WHERE flightnumber= " + flight.getId();
-		PreparedStatement preparedStatement = connection.prepareStatement(prep);
-		preparedStatement.setString(1, flight.getDestLocation);
-		preparedStatement.setString(2, flight.getSourceLocation());
-		preparedStatement.setString(3, flight.getDate());
-		preparedStatement.setString(4, flight.getTime());
-		preparedStatement.setString(5, flight.getDuration());
-		preparedStatement.setString(6, flight.getTotalSeats());
-		preparedStatement.setString(7, flight.getRemainingSeats() + changeInRemainingSeats);
-		preparedStatement.setString(8, flight.getPrice());
-		preparedStatement.executeUpdate();
+		try{
+			String prep = "UPDATE flights "
+						+ "SET destlocation= ?"
+						+ ", sourcelocation= ?"
+						+ ", date= ?"
+						+ ", time= ?"
+						+ ", duration= ?"
+						+ ", totalseats= ? "
+						+ ", remainingseats= ?"
+						+ ", price= ?"
+						+ "WHERE flightnumber= " + flight.getFlightId();
+			PreparedStatement preparedStatement = connection.prepareStatement(prep);
+			preparedStatement.setString(1, flight.getDest());
+			preparedStatement.setString(2, flight.getSrc());
+			preparedStatement.setString(3, flight.getDate());
+			preparedStatement.setString(4, flight.getTime());
+			preparedStatement.setString(5, flight.getDuration());
+			preparedStatement.setString(6, flight.getTotalSeats());
+			preparedStatement.setString(7, flight.getAvailableSeats() + changeInRemainingSeats);
+			preparedStatement.setString(8, flight.getPrice());
+			preparedStatement.executeUpdate();
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	synchronized Flight getFlight(String flightId)
@@ -217,7 +217,7 @@ public class Database {
 			prepared.setString(6, ticket.getPrice());
 			prepared.executeUpdate();
 
-			changeSeats(getFlight(ticket.getFlightId(), -1));
+			changeSeats(getFlight(ticket.getFlightId()), -1);
 		}
 		catch(SQLException e)
 		{
@@ -234,14 +234,14 @@ public class Database {
 			+" VALUES(?, ?, ?, ?, ?, ?)"; 
 
 			PreparedStatement prepared = connection.prepareStatement(prep);
-			prepared.setInt(1, Integer.parseInt(flight.getId()));
-			prepared.setString(2, flight.getSourceLocation);
-			prepared.setString(3, flight.getDestLocation());
+			prepared.setInt(1, Integer.parseInt(flight.getFlightId()));
+			prepared.setString(2, flight.getSrc());
+			prepared.setString(3, flight.getDest());
 			prepared.setString(4, flight.getDate());
 			prepared.setString(5, flight.getTime());
 			prepared.setString(6, flight.getDuration());
 			prepared.setInt(7, Integer.parseInt(flight.getTotalSeats()));
-			prepared.setInt(8, Integer.parseInt(flight.getRemainingSeats()));
+			prepared.setInt(8, Integer.parseInt(flight.getAvailableSeats()));
 			prepared.setString(9, flight.getPrice());
 			prepared.executeUpdate();
 
@@ -262,9 +262,8 @@ public class Database {
 			stmt = connection.createStatement();
 			String query = "DELETE FROM ticket WHERE ticketid= " + Integer.parseInt(ticketId);
 			stmt.execute(query);
-			//TODO: Increment available seats in Plane
 			Ticket t = getTicket(ticketId);
-			changeSeats(getFlight(t.getFlightId(), 1));
+			changeSeats(getFlight(t.getFlightId()), 1);
 
 			return "Booking removed";
 		}
@@ -283,11 +282,9 @@ public class Database {
 
 			query = "SELECT * FROM ticket WHERE ticketid" + " = '" + Integer.parseInt(ticketId) + "'";
 			rs = stmt.executeQuery(query);
-
-			Ticket t = new Ticket(rs.getString("ticketid"), rs.getString("flightid"),
-									   rs.getString("firstname"), rs.getString("lastname"),
-									   rs.getString("date"), rs.getString("price"));
-									  
+			Flight f = getFlight(rs.getString("flightid"));
+			Ticket t = new Ticket(f, rs.getString("ticketid"), rs.getString("firstname"), rs.getString("lastname"));
+	
 			return t;
 		}
 		catch(SQLException e){
@@ -319,12 +316,12 @@ public class Database {
 			query = "SELECT * FROM ticket WHERE" + param + " = '" + key + "'";
 			rs = stmt.executeQuery(query);
 
-			ArrayList<Ticket> ticketList = new ArrayList();
+			ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
 			while(rs.next())
 			{
-				Ticket ticket = new Ticket(rs.getString("ticketid"), rs.getString("flightid"),
-										   rs.getString("firstname"), rs.getString("lastname"),
-										   rs.getString("date"), rs.getString("price"));
+				Flight f = getFlight(rs.getString("flightid"));
+				Ticket ticket = new Ticket(f, rs.getString("ticketid"), rs.getString("firstname"), rs.getString("lastname"));
+			
 				ticketList.add(ticket);
 			}
 			return ticketList;
@@ -344,12 +341,11 @@ public class Database {
 
 			rs = stmt.executeQuery(query);
 
-			ArrayList<Ticket> ticketList = new ArrayList();
+			ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
 			while(rs.next())
 			{
-				Ticket ticket = new Ticket(rs.getString("ticketid"), rs.getString("flightid"),
-										   rs.getString("firstname"), rs.getString("lastname"),
-										   rs.getString("date"), rs.getString("price"));
+				Flight f = getFlight(rs.getString("flightid"));
+				Ticket ticket = new Ticket(f, rs.getString("ticketid"), rs.getString("firstname"), rs.getString("lastname"));
 				ticketList.add(ticket);
 			}
 			return ticketList;
