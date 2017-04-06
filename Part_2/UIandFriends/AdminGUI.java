@@ -23,6 +23,7 @@ import javax.swing.border.BevelBorder;
 import java.awt.Color;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -35,12 +36,13 @@ import javax.swing.JTextPane;
 import javax.swing.border.LineBorder;
 import javax.swing.border.SoftBevelBorder;
 import java.awt.GridLayout;
+import javax.swing.ListSelectionModel;
 
 public class AdminGUI {
 	private Admin adminBE;
 
 	private JFrame frmAdminApplication;
-	private JTextField fSearchField;
+	private JTextField flightSearchField;
 	private JTextField textField_1;
 	private JTextField flightIdNumberField;
 	private JTextField destField;
@@ -53,7 +55,7 @@ public class AdminGUI {
 	private JTextField priceField;
 	private JTextField priceTaxField;
 	private JTextField fileNameField;
-	private JTextField tSearchField;
+	private JTextField ticketSearchField;
 	private JTextField addDestField;
 	private JTextField addDepartField;
 	private JTextField addDoDField;
@@ -66,11 +68,11 @@ public class AdminGUI {
 	private JTextField tDepartField;
 	private JTextField tDoFField;
 	private JTextField tTotalSeatsField;
-	private JTextField tLNameField;
+	private JTextField tLastNameField;
 	private JTextField tToDField;
 	private JTextField tPriceField;
 	private JTextField tPriceTaxField;
-	private JTextField tFNameField;
+	private JTextField tFirstNameField;
 	private JTextField tFlightIdNumberField;
 	private JTextField tDoDField;
 	private JTextField firstNameField;
@@ -105,7 +107,7 @@ public class AdminGUI {
 	 * Create the application.
 	 */
 	public AdminGUI() {
-		adminBE = new Admin();
+		adminBE = new Admin("localhost", 9595);
 		initialize();
 	}
 
@@ -319,23 +321,53 @@ public class AdminGUI {
 		lblSearchForFlights.setBounds(10, 11, 282, 35);
 		browseFlightPanel.add(lblSearchForFlights);
 		
-		fSearchField = new JTextField();
-		fSearchField.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		fSearchField.setBounds(10, 111, 236, 32);
-		browseFlightPanel.add(fSearchField);
-		fSearchField.setColumns(10);
+		flightSearchField = new JTextField();
+		flightSearchField.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		flightSearchField.setBounds(10, 111, 236, 32);
+		browseFlightPanel.add(flightSearchField);
+		flightSearchField.setColumns(10);
 		
-		JComboBox cBoxFParam = new JComboBox();
-		cBoxFParam.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		cBoxFParam.setModel(new DefaultComboBoxModel(new String[] {"Departure Location", "Destination Location", "Date of Departure"}));
-		cBoxFParam.setBounds(10, 57, 236, 32);
-		cBoxFParam.setSelectedIndex(-1);
-		browseFlightPanel.add(cBoxFParam);
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 168, 364, 279);
+		browseFlightPanel.add(scrollPane);
+		
+		JList<Flight> flightList = new JList<Flight>();
+		flightList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollPane.setViewportView(flightList);
+		
+		JComboBox cBoxFlightParam = new JComboBox();
+		cBoxFlightParam.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		cBoxFlightParam.setModel(new DefaultComboBoxModel(new String[] {"Departure Location", "Destination Location", "Date of Departure"}));
+		cBoxFlightParam.setBounds(10, 57, 236, 32);
+		cBoxFlightParam.setSelectedIndex(-1);
+		browseFlightPanel.add(cBoxFlightParam);
 		
 		JButton btnSearch = new JButton("Search");
 		btnSearch.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				String message = "good";
+				if(cBoxFlightParam.getSelectedIndex() == -1 || flightSearchField.getText().equals("")){
+					//String message = adminBE.getTickets()
+				}
+				else if(cBoxFlightParam.getSelectedIndex() == 0){
+					//String message = adminBE.searchTickets("flightId", flightSearchField.getText());
+				}
+				else if(cBoxFlightParam.getSelectedIndex() == 1){
+					//String message = adminBE.searchTickets("destination", flightSearchField.getText());
+				}
+				else if(cBoxFlightParam.getSelectedIndex() == 2){
+					//String message = adminBE.searchTickets("source", flightSearchField.getText());
+				}
+				if(message.equals("good")) {
+					DefaultListModel<Flight> DLM = new DefaultListModel<Flight>();
+					for(int i = 0; i < adminBE.flights.size(); i++)
+						DLM.addElement(adminBE.flights.get(i));
+					flightList.setModel(DLM);
+				}
+				else{
+					JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
+				}
 			}
 		});
 		btnSearch.setBounds(256, 111, 118, 32);
@@ -345,19 +377,14 @@ public class AdminGUI {
 		btnClear.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnClear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				fSearchField.setText("");
-				cBoxFParam.setSelectedIndex(-1);
+				flightSearchField.setText("");
+				cBoxFlightParam.setSelectedIndex(-1);
+				flightList.removeAll();
+
 			}
 		});
 		btnClear.setBounds(256, 58, 118, 32);
 		browseFlightPanel.add(btnClear);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 168, 364, 279);
-		browseFlightPanel.add(scrollPane);
-		
-		JList list = new JList();
-		scrollPane.setViewportView(list);
 		
 		JButton btnRefresh = new JButton("Refresh Flights");
 		btnRefresh.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -488,7 +515,7 @@ public class AdminGUI {
 		lblDepartureLocation_1.setBounds(10, 90, 212, 25);
 		addFlightInteriorPanel.add(lblDepartureLocation_1);
 		
-		JLabel lblDateOfDepartureddmmyyyy = new JLabel("Date of Departure (dd/mm/yyyy)");
+		JLabel lblDateOfDepartureddmmyyyy = new JLabel("Date of Departure (dd/MM/yyyy)");
 		lblDateOfDepartureddmmyyyy.setVerticalAlignment(SwingConstants.BOTTOM);
 		lblDateOfDepartureddmmyyyy.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblDateOfDepartureddmmyyyy.setBounds(10, 130, 268, 25);
@@ -500,7 +527,7 @@ public class AdminGUI {
 		lblTimeOfDeparture_1.setBounds(10, 170, 268, 25);
 		addFlightInteriorPanel.add(lblTimeOfDeparture_1);
 		
-		JLabel lblDurationOfFlight_1 = new JLabel("Duration of Flight (hrs)");
+		JLabel lblDurationOfFlight_1 = new JLabel("Duration of Flight (ddd:hh:mm)");
 		lblDurationOfFlight_1.setVerticalAlignment(SwingConstants.BOTTOM);
 		lblDurationOfFlight_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblDurationOfFlight_1.setBounds(10, 210, 268, 25);
@@ -593,27 +620,51 @@ public class AdminGUI {
 		LFFFPanel.add(fileNameField);
 		fileNameField.setColumns(10);
 		
-		tSearchField = new JTextField();
-		tSearchField.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		tSearchField.setColumns(10);
-		tSearchField.setBounds(10, 110, 236, 32);
-		browseTicketPanel.add(tSearchField);
+		ticketSearchField = new JTextField();
+		ticketSearchField.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		ticketSearchField.setColumns(10);
+		ticketSearchField.setBounds(10, 110, 236, 32);
+		browseTicketPanel.add(ticketSearchField);
 		
-		JComboBox cBoxTParam = new JComboBox();
-		cBoxTParam.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		cBoxTParam.setModel(new DefaultComboBoxModel(new String[] {"Ticket ID Number", "Flight ID Number", "Ticket Holder Last Name"}));
-		cBoxTParam.setSelectedIndex(-1);
-		cBoxTParam.setBounds(10, 67, 236, 32);
-		browseTicketPanel.add(cBoxTParam);
+		JComboBox cBoxTicketParam = new JComboBox();
+		cBoxTicketParam.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		cBoxTicketParam.setModel(new DefaultComboBoxModel(new String[] {"Ticket ID Number", "Flight ID Number", "Ticket Holder Last Name"}));
+		cBoxTicketParam.setSelectedIndex(-1);
+		cBoxTicketParam.setBounds(10, 67, 236, 32);
+		browseTicketPanel.add(cBoxTicketParam);
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(10, 153, 374, 287);
+		browseTicketPanel.add(scrollPane_1);
+		
+		JList<Ticket> ticketList = new JList<Ticket>();
+		scrollPane_1.setViewportView(ticketList);
 		
 		JButton btnTSearch = new JButton("Search");
 		btnTSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(cBoxTParam.getSelectedIndex(-1) || tSearchField.getText().equals(""))
-					
-		
-			
-		
+				String message = "good";
+				if(cBoxTicketParam.getSelectedIndex() == -1 || ticketSearchField.getText().equals("")){
+					//String message = adminBE.getTickets()
+				}
+				else if(cBoxTicketParam.getSelectedIndex() == 0){
+					//String message = adminBE.searchTickets("ticketId", ticketSearchField.getText());
+				}
+				else if(cBoxTicketParam.getSelectedIndex() == 1){
+					//String message = adminBE.searchTickets("flightId", ticketSearchField.getText());
+				}
+				else if(cBoxTicketParam.getSelectedIndex() == 2){
+					//String message = adminBE.searchTickets("lastName", ticketSearchField.getText());
+				}
+				if(message.equals("good")) {
+					DefaultListModel<Ticket> DLM = new DefaultListModel<Ticket>();
+					for(int i = 0; i < adminBE.tickets.size(); i++)
+						DLM.addElement(adminBE.tickets.get(i));
+					ticketList.setModel(DLM);
+				}
+				else{
+					JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
+				}
 			}
 		});
 		btnTSearch.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -624,19 +675,13 @@ public class AdminGUI {
 		btnTClear.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnTClear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				tSearchField.setText("");
-				cBoxTParam.setSelectedIndex(-1);
+				ticketSearchField.setText("");
+				cBoxTicketParam.setSelectedIndex(-1);
+				ticketList.removeAll();
 			}
 		});
 		btnTClear.setBounds(256, 67, 109, 32);
 		browseTicketPanel.add(btnTClear);
-		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(10, 153, 374, 287);
-		browseTicketPanel.add(scrollPane_1);
-		
-		JList list_1 = new JList();
-		scrollPane_1.setViewportView(list_1);
 		
 		JButton btnRefreshTickets = new JButton("Refresh Tickets");
 		btnRefreshTickets.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -750,12 +795,12 @@ public class AdminGUI {
 		label_15.setBounds(10, 395, 140, 25);
 		panel.add(label_15);
 		
-		tLNameField = new JTextField();
-		tLNameField.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tLNameField.setEditable(false);
-		tLNameField.setColumns(10);
-		tLNameField.setBounds(216, 325, 84, 25);
-		panel.add(tLNameField);
+		tLastNameField = new JTextField();
+		tLastNameField.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		tLastNameField.setEditable(false);
+		tLastNameField.setColumns(10);
+		tLastNameField.setBounds(216, 325, 84, 25);
+		panel.add(tLastNameField);
 		
 		tToDField = new JTextField();
 		tToDField.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -796,12 +841,12 @@ public class AdminGUI {
 		lblAvailableSeats_1.setBounds(10, 290, 196, 25);
 		panel.add(lblAvailableSeats_1);
 		
-		tFNameField = new JTextField();
-		tFNameField.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tFNameField.setEditable(false);
-		tFNameField.setColumns(10);
-		tFNameField.setBounds(216, 290, 84, 25);
-		panel.add(tFNameField);
+		tFirstNameField = new JTextField();
+		tFirstNameField.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		tFirstNameField.setEditable(false);
+		tFirstNameField.setColumns(10);
+		tFirstNameField.setBounds(216, 290, 84, 25);
+		panel.add(tFirstNameField);
 		
 		JLabel lblTicketIdNumber = new JLabel("Ticket ID Number");
 		lblTicketIdNumber.setVerticalAlignment(SwingConstants.BOTTOM);

@@ -3,68 +3,64 @@ package Final_Project;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.regex.Pattern;
+import java.util.List;
 
-public class Admin {
+public class Admin extends Passenger {
+	public ArrayList<Ticket> tickets;
 	
-	public String checkFormatFlight(Flight toCheck){
+	public Admin(String serverName, int portNumber){
+		super(serverName, portNumber);
+	}
+	
+	public String checkFormatFlight(Flight flightToCheck){
 		String toReturn="";
 		boolean badFormat = false;
 		
-		
-		String curr = toCheck.getDest();
+		String curr = flightToCheck.getDest();
 		if(curr.length() > 20 || curr.isEmpty() || curr.contains("_")){
 			badFormat = true;
-			String temp = toReturn;
-			toReturn = temp + " Destination Location format Error, please ensure field is not empty and does not excede 20 characters_";
+			toReturn += "Destination Location format Error, please ensure field is not empty and does not excede 20 characters_";
 		}
 		
-		curr = toCheck.getSrc();
+		curr = flightToCheck.getSrc();
 		if(curr.length() > 20 || curr.isEmpty() || curr.contains("_")){
 			badFormat = true;
-			String temp = toReturn;
-			toReturn = temp + " Departure Location format Error, please ensure field is not empty and does not exceed 20 characters_";
+			toReturn += "Departure Location format Error, please ensure field is not empty and does not exceed 20 characters_";
 		}
 		
-		if(!isDate(toCheck.getDate())){
+		if(!isDate(flightToCheck.getDate())){
 			badFormat = true;
-			String temp = toReturn;
-			toReturn = temp + " Date format Error, please ensure format follows dd/MM/yyyy and date has not passed_";
+			toReturn += "Date format Error, please ensure format follows dd/MM/yyyy , the date is valid and date has not passed_";
 		}
 		
-		curr = toCheck.getTime();
+		curr = flightToCheck.getTime();
 		if(!curr.matches("^([01][0-9]|[2][0-3]):[0-5][0-9]")){
 			badFormat = true;
-			String temp = toReturn;
-			toReturn = temp + " Time format Error, please ensure format follows hh:mm in 24hr time_";
+			toReturn += "Time format Error, please ensure format follows hh:mm in 24hr time_";
 		}
 		
-		curr = toCheck.getDuration();
+		curr = flightToCheck.getDuration();
 		if(!curr.matches("^\\d{3}:([01][0-9]|[2][0-3]):[0-5][0-9]")){
 			badFormat = true;
-			String temp = toReturn;
-			toReturn = temp + " Duration format Error, please ensure format follows dd:hh:mm_";
+			toReturn += "Duration format Error, please ensure format follows ddd:hh:mm in 24hr time_";
 		}
 		
-		curr = toCheck.getTotalSeats();
+		curr = flightToCheck.getTotalSeats();
 		if(!isNum(curr)){
 			badFormat = true;
-			String temp = toReturn;
-			toReturn = temp + "Total Seats format Error, please ensure entered value is an integer_";
+			toReturn += "Total Seats format Error, please ensure entered value is an integer_";
 		}
 		
-		curr = toCheck.getPrice();
+		curr = flightToCheck.getPrice();
 		if(!isNum(curr) || curr.length()>19){
 			badFormat = true;
-			String temp = toReturn;
-			toReturn = temp + " Price format Error, please ensure entered value is an integer 19 digits or less_";
+			toReturn += "Price format Error, please ensure entered value is an integer 19 digits or less";
 		}
 		
 		if(badFormat){
-			String temp = toReturn;
-			toReturn = "ERROR_" + temp;
-			return toReturn;
+			return "ERROR_" + toReturn;
 		}
 		return "GOOD FORMAT";
 	}
@@ -85,21 +81,33 @@ public class Admin {
 		}
 		return true;
 	}
+	
 	public boolean isNum(String toTest){
 		 try { 
 		        Integer.parseInt(toTest); 
-		    } catch(Exception e) { 
+		    } catch(NumberFormatException e) { 
 		        return false; 
 		    }
 		    return true;
 	}
 	
-	public String addFlight(Flight addedFlight){
-		String toReturn = checkFormatFlight(addedFlight);
+	public String getTickets(){
+		//socketOut.println("GETTICKETS_");
+		//
+		return "";
+	}
+	
+	public String searchTickets(String param, String key){
+		//socketOut.println("SEARCHTICKETS_" + param + key);
+		return "";
+	}
+	
+	public String addFlight(Flight flightToAdd){
+		String toReturn = checkFormatFlight(flightToAdd);
 		if(toReturn.contains("ERROR")){
 			return toReturn;
 		}
-		String toSend = "ADDFLIGHT_ + *insert serialized addedFlight here";
+		String toSend = "ADDFLIGHT_ + insert serialized flightToAdd here";
 		//socketOut.println(toSend);
 		//toReturn = 
 		//return message will either be "flight successfully added", "An error occurred adding flight", or "Flight ID unavailable"
@@ -128,10 +136,7 @@ public class Admin {
 			br.close();
 		}catch(Exception e){
 			return "File does not exist, or is improperly formatted";
-		}
-		
+		}	
 		return "Flights loaded from file.";
 	}
-	
-
 }

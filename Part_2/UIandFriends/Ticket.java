@@ -11,6 +11,12 @@ public class Ticket extends Flight {
 		firstName = fN;
 		lastName = lN;
 	}
+	public Ticket (Flight flight, String ticketID, String firstName, String lastName){
+		super(flight.getFlightId(), flight.getDest(), flight.getSrc(), flight.getDate(), flight.getTime(), flight.getDuration(), flight.getTotalSeats(), flight.getAvailableSeats(), flight.getPrice());
+		ticketId = ticketId;
+		firstName = firstName;
+		lastName = lastName;
+	}
 	
 	public String getTicketId(){
 		return ticketId;

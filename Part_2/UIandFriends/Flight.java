@@ -11,7 +11,7 @@ public class Flight implements Serializable{
 	private String durationOfFlight;
 	private String totalSeats;
 	private String availableSeats;
-	String price;
+	private String price;
 	
 	public Flight(String fId, String dest, String src, String dateOF, String timeOF, String durOF, String tS, String aS, String prc){
 		flightId = fId;
@@ -37,7 +37,7 @@ public class Flight implements Serializable{
 		String toReturn = flightId + "		" + destination + "		" + source;
 		return toReturn;
 	}
-	public boolean hasSpace(){
+	public boolean hasAvailableSeats(){
 		if(Integer.getInteger(availableSeats) <= 0)
 			return false;
 		return true;
@@ -64,14 +64,15 @@ public class Flight implements Serializable{
 	public String getTotalSeats(){
 		return totalSeats;
 	}
+	public String getAvailableSeats(){
+		return availableSeats;
+	}
 	public String getPrice(){
 		return price;
 	}
-	public String GetTaxedPrice(){
+	public String getTaxedPrice(){
 		Double prc = Double.parseDouble(price);
 		prc *= 1.07;
 		return prc.toString();
 	}
-	
-
 }

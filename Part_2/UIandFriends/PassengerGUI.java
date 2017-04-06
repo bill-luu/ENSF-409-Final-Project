@@ -23,8 +23,10 @@ import javax.swing.border.BevelBorder;
 import java.awt.Color;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.DropMode;
 import javax.swing.SpringLayout;
 import javax.swing.GroupLayout;
@@ -35,9 +37,10 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.SoftBevelBorder;
 
 public class PassengerGUI {
+	Passenger passengerBE;
 
 	private JFrame frmPassengerApplication;
-	private JTextField searchField;
+	private JTextField flightSearchField;
 	private JTextField textField_1;
 	private JTextField firstNameField;
 	private JTextField lastNameField;
@@ -71,6 +74,7 @@ public class PassengerGUI {
 	 * Create the application.
 	 */
 	public PassengerGUI() {
+		passengerBE = new Passenger("localhost", 9595);
 		initialize();
 	}
 
@@ -98,23 +102,52 @@ public class PassengerGUI {
 		cardPanel.add(bookFlightPanel, "name_6185181549412");
 		bookFlightPanel.setLayout(null);
 		
-		searchField = new JTextField();
-		searchField.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		searchField.setBounds(10, 113, 232, 32);
-		searchFlightPanel.add(searchField);
-		searchField.setColumns(10);
+		flightSearchField = new JTextField();
+		flightSearchField.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		flightSearchField.setBounds(10, 113, 232, 32);
+		searchFlightPanel.add(flightSearchField);
+		flightSearchField.setColumns(10);
 		
-		JComboBox cBoxParam = new JComboBox();
-		cBoxParam.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		cBoxParam.setModel(new DefaultComboBoxModel(new String[] {"Search by Departure Location", "Search by Destination Location", "Search by Date of Departure"}));
-		cBoxParam.setBounds(10, 59, 232, 32);
-		cBoxParam.setSelectedIndex(-1);
-		searchFlightPanel.add(cBoxParam);
+		JComboBox cBoxFlightParam = new JComboBox();
+		cBoxFlightParam.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		cBoxFlightParam.setModel(new DefaultComboBoxModel(new String[] {"Search by Departure Location", "Search by Destination Location", "Search by Date of Departure"}));
+		cBoxFlightParam.setBounds(10, 59, 232, 32);
+		cBoxFlightParam.setSelectedIndex(-1);
+		searchFlightPanel.add(cBoxFlightParam);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 156, 365, 285);
+		searchFlightPanel.add(scrollPane);
+		
+		JList<Flight> flightList = new JList<Flight>();
+		scrollPane.setViewportView(flightList);
 		
 		JButton btnSearch = new JButton("Search");
 		btnSearch.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				String message = "good";
+				if(cBoxFlightParam.getSelectedIndex() == -1 || flightSearchField.getText().equals("")){
+					//String message = passengerBE.getFlights();
+				}
+				else if(cBoxFlightParam.getSelectedIndex() == 0){
+					//String message = passengerBE.searchTickets("flightId", flightSearchField.getText());
+				}
+				else if(cBoxFlightParam.getSelectedIndex() == 1){
+					//String message = passengerBE.searchTickets("destination", flightSearchField.getText());
+				}
+				else if(cBoxFlightParam.getSelectedIndex() == 2){
+					//String message = passengerBE.searchFights("source", flightSearchField.getText());
+				}
+				if(message.equals("good")) {
+					DefaultListModel<Flight> DLM = new DefaultListModel<Flight>();
+					for(int i = 0; i < passengerBE.flights.size(); i++)
+						DLM.addElement(passengerBE.flights.get(i));
+					flightList.setModel(DLM);
+				}
+				else{
+					JOptionPane.showMessageDialog(frmPassengerApplication.getComponent(0), message);
+				}
 			}
 		});
 		btnSearch.setBounds(252, 113, 123, 32);
@@ -124,19 +157,13 @@ public class PassengerGUI {
 		btnClear.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnClear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				searchField.setText("");
-				cBoxParam.setSelectedIndex(-1);
+				flightSearchField.setText("");
+				cBoxFlightParam.setSelectedIndex(-1);
+				flightList.removeAll();
 			}
 		});
 		btnClear.setBounds(252, 59, 123, 32);
 		searchFlightPanel.add(btnClear);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 156, 365, 285);
-		searchFlightPanel.add(scrollPane);
-		
-		JList list = new JList();
-		scrollPane.setViewportView(list);
 		
 		JButton btnRefresh = new JButton("Refresh Flights");
 		btnRefresh.setFont(new Font("Tahoma", Font.PLAIN, 16));
