@@ -3,15 +3,10 @@ Passenger:
 
 "GETFLIGHTS_" // Tries to get all flights, expects the serialized array of flights back
 
-BOOK_ + String flightNumber// Tries to book a flight and sends the flight number so that a ticket can be created. Expects the ticket created in server back
+BOOK_ + String flightNumber + "_" + String firstname + "_" + String lastname// Tries to book a flight and sends the flight number so that a ticket can be created. Expects the ticket created in server back
 
 Admin:
 "ADDFLIGHT_", Flight flightAdded //sends ADDFLIGHT command followed by serialized flight object, expects confirmation of flight added or error
 "DELETE_" + ticketId //sends ticketId to be deleted, must delete ticket and increment associated flight, expects confirmation of ticket deleted or error
 "SEARCHTICKET_" + String param + "_" + String key //searches for tickets based on parameter, possible parameters: flightId, ticketId, lastName.  Expects to receive serialized Array of tickets
 "GETTICKETS_" // Tries to get all tickets, expects the serialized array of tickets back
-
- 
-
-
-Server: 
