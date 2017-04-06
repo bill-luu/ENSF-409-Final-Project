@@ -1,5 +1,3 @@
-package airlinesystem;
-
 public class Ticket extends Flight {
 	private String ticketId;
 	private String firstName;
@@ -13,7 +11,7 @@ public class Ticket extends Flight {
 	}
 	public Ticket (Flight flight, String ticketID, String firstName, String lastName){
 		super(flight.getFlightId(), flight.getDest(), flight.getSrc(), flight.getDate(), flight.getTime(), flight.getDuration(), flight.getTotalSeats(), flight.getAvailableSeats(), flight.getPrice());
-		this.ticketId = ticketId;
+		this.ticketId = ticketID;
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}

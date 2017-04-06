@@ -1,11 +1,11 @@
-package airlinesystem;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 public class Admin extends Passenger {
 	public ArrayList<Ticket> receivedTickets;
@@ -113,17 +113,22 @@ public class Admin extends Passenger {
 	            socketOut.println("SEARCHTICKET_" + param + "_" + key);
 	            response = socketIn.readLine();
 	            if (!response.equals("GOOD")) {
-	                inputStream = ObjectInputStream(socket.getInputStream());
+	                inputStream = new ObjectInputStream(socket.getInputStream());
 	                receivedTickets = (ArrayList<Ticket>) inputStream.readObject();
 	                return "GOOD";
 	            }
 	            else {
 	                return "The ticket you were looking for could not be found";
 	            }
-	        } catch (IOException e) {
+	        }
+	        catch (IOException e) {
 	            System.err.println(e.getStackTrace());
 	            return "An IO Exception occured...";
 	        }
+			catch (ClassNotFoundException e) {
+				System.err.println(e.getStackTrace());
+				return "A ClassNotFound Exception occured";
+			}
 	    }
 
 	    public String getTickets() {
@@ -133,17 +138,22 @@ public class Admin extends Passenger {
 	            socketOut.println("GETTICKETS_");
 	            response = socketIn.readLine();
 	            if (!response.equals("GOOD")) {
-	                inputStream = ObjectInputStream(socket.getInputStream());
+	                inputStream = new ObjectInputStream(socket.getInputStream());
 	                receivedTickets = (ArrayList<Ticket>) inputStream.readObject();
 	                return "GOOD";
 	            }
 	            else {
 	                return "No tickets could be found";
 	            }
-	        } catch (IOException e) {
+	        }
+	        catch (IOException e) {
 	            System.err.println(e.getStackTrace());
 	            return "An IO Exception occured...";
 	        }
+			catch (ClassNotFoundException e) {
+				System.err.println(e.getStackTrace());
+				return "A ClassNotFound Exception occured";
+			}
 	    }
 	
 	public String addFlight(Flight flightToAdd){
@@ -153,7 +163,8 @@ public class Admin extends Passenger {
 		String response = "";
 		 try {
 	            socketOut.println("BOOK_");
-	            outputStream.print(flightToAdd);
+	            outputStream = new ObjectOutputStream(socket.getOutputStream());
+	            outputStream.writeObject(flightToAdd);
 	            response = socketIn.readLine();
 	            return response;
 	        } catch (IOException e) {

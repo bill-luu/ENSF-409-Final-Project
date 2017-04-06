@@ -1,17 +1,14 @@
-package airlinesystem;
-import java.io.BufferedReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.io.PrintWriter;
 
 public class Passenger {
     protected PrintWriter ticketWriter;
     protected PrintWriter socketOut;
     protected Socket socket;
     protected BufferedReader socketIn;
-    protected OutputFileStream outputStream;
-    protected InputFileStream inputStream;
+    protected ObjectOutputStream outputStream;
+    protected ObjectInputStream inputStream;
     public ArrayList<Flight> receivedFlights;
 
 
@@ -38,16 +35,21 @@ public class Passenger {
             socketOut.println("SEARCHFLIGHT_" + param + "_" + key);
             response = socketIn.readLine();
             if (!response.equals("GOOD")) {
-                inputStream = ObjectInputStream(socket.getInputStream());
-                receivedFlights = (ArrayList<Flight>) inputStream.readObject();
+                inputStream = new ObjectInputStream(socket.getInputStream());
+                receivedFlights = (ArrayList<Flight>)inputStream.readObject();
                 return "GOOD";
             }
             else {
                 return "The flight you were looking for could not be found";
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             System.err.println(e.getStackTrace());
             return "An IO Exception occured...";
+        }
+        catch (ClassNotFoundException e) {
+            System.err.println(e.getStackTrace());
+            return "A ClassNotFound Exception occured";
         }
     }
 
@@ -57,16 +59,21 @@ public class Passenger {
             socketOut.println("GETFLIGHTS_");
             response = socketIn.readLine();
             if (!response.equals("GOOD")) {
-                inputStream = ObjectInputStream(socket.getInputStream());
-                receivedFlights = (ArrayList<Flight>) inputStream.readObject();
+                inputStream = new ObjectInputStream(socket.getInputStream());
+                receivedFlights = (ArrayList<Flight>)inputStream.readObject();
                 return "GOOD";
             }
             else {
                 return "No flights could be found";
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             System.err.println(e.getStackTrace());
             return "An IO Exception occured...";
+        }
+        catch (ClassNotFoundException e) {
+            System.err.println(e.getStackTrace());
+            return "A ClassNotFound Exception occured";
         }
     }
 
@@ -79,26 +86,36 @@ public class Passenger {
             socketOut.println("BOOK_" + firstName + lastName + flightNumber);
             response = socketIn.readLine();
             if (!response.equals("GOOD")) {
-                inputStream = ObjectInputStream(socket.getInputStream());
-                Ticket printedTicket = (Ticket) inputStream.readObject();
+                inputStream = new ObjectInputStream(socket.getInputStream());
+                Ticket printedTicket = (Ticket)inputStream.readObject();
                 printTicket(printedTicket);
                 return "Ticket Successfully Booked!";
-            } else {
+            }
+            else {
                 return "Error booking ticket, please refresh to ensure seats are available";
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             System.err.println(e.getStackTrace());
             return "An IO Exception occured...";
+        }
+        catch (ClassNotFoundException e) {
+            System.err.println(e.getStackTrace());
+            return "A ClassNotFound Exception occured";
         }
     }
 
     public void printTicket(Ticket ticketA) {
-      //why are these here?		  String ticketFirstName, ticketLastName, ticketFlightNumber, ticketSource, ticketDestination, ticketDate, ticketTime, ticketDuration, ticketPrice;
 
-        ticketWriter = new PrintWriter("Flight" + ticketA.getFlightId() + "-ticket.txt");
-        ticketWriter.printf("%5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s", "First Name", "Last Name", "Flight #", "Starting Destionation", "Final Destination", "Date of Departure", "Time of Departure", "Duration of Flight", "Total Price of FLight" );
-        ticketWriter.printf("%5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s", ticketA.getFirstName(), ticketA.getLastName(), ticketA.getFlightId(), ticketA.getSrc(), ticketA.getDest(), ticketA.getDate(), ticketA.getTime(), ticketA.getDuration(), ticketA.getTaxedPrice());
-        ticketWriter.close();
+        try {
+            ticketWriter = new PrintWriter("Flight" + ticketA.getFlightId() + "-ticket.txt");
+            ticketWriter.printf("%5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s", "Ticket #", "First Name", "Last Name", "Flight #", "Starting Destionation", "Final Destination", "Date of Departure", "Time of Departure", "Duration of Flight", "Total Price of FLight");
+            ticketWriter.printf("%5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s", ticketA.getTicketId(), ticketA.getFirstName(), ticketA.getLastName(), ticketA.getFlightId(), ticketA.getSrc(), ticketA.getDest(), ticketA.getDate(), ticketA.getTime(), ticketA.getDuration(), ticketA.getTaxedPrice());
+            ticketWriter.close();
+        }
+        catch (FileNotFoundException e) {
+            System.err.println(e.getStackTrace());
+        }
     }
     
     public boolean isNum(String toTest){
@@ -111,7 +128,7 @@ public class Passenger {
 	}
 
     public String checkFormatFlightSearch(String param, String key){
-    	String toReturn;
+    	String toReturn = "";
     	switch (param){
     	case "flightId":
     		if(!isNum(key) || key.length() > 6)
