@@ -1,0 +1,11 @@
+Passenger:
+SEARCHFLIGHT_ + String key // Searches for a flight, sends the key, expects the serialized flight sent back
+
+GET_ // Tries to get all flights, expects the serialized array of flights back
+
+BOOK_ + String flightNumber// Tries to book a flight and sends the flight number so that a ticket can be created. Expects the ticket created in server back
+
+Admin:
+
+
+Server: 
