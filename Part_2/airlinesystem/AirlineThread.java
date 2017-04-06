@@ -62,7 +62,7 @@ public class AirlineThread implements Runnable {
 					case "GETFLIGHTS":
 						if(isValidResponse(response, 1))
 						{
-							outputObject.writeObject(database.searchFlight());
+							outputObject.writeObject(database.getAllFlights());
 						}
 						break;
 					case "BOOK":
@@ -104,7 +104,7 @@ public class AirlineThread implements Runnable {
 					case "GETTICKETS":
 						if(isValidResponse(response, 1))
 						{
-							outputObject.writeObject(database.searchTicket());
+							outputObject.writeObject(database.getAllTickets());
 						}
 						break;
 					case "QUIT":
