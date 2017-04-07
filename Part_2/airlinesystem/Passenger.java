@@ -42,15 +42,13 @@ public class Passenger {
         	return format;
         try {
             outputStream.writeObject((String)"SEARCHFLIGHT_" + param + "_" + key);
-            response = (String)inputStream.readObject(); 
-            if (response.equals("GOOD")) {
-               // inputStream = new ObjectInputStream(socket.getInputStream());
-                receivedFlights = (ArrayList<Flight>)inputStream.readObject();
-                return "GOOD";
+            receivedFlights = (ArrayList<Flight>)inputStream.readObject();
+            if(receivedFlights.isEmpty())
+            {
+            	 return "The flight you were looking for could not be found";
             }
-            else {
-                return "The flight you were looking for could not be found";
-            }
+            else
+            	return "GOOD";
         }
         catch (IOException e) {
             System.err.println(e.getStackTrace());
@@ -162,15 +160,15 @@ public class Passenger {
     public String checkFormatFlightSearch(String param, String key){
     	String toReturn = "";
     	switch (param){
-    	case "flightId":
+    	case "flightnumber":
     		if(!isNum(key) || key.length() > 4)
     			toReturn = "Search field format error, please ensure field is an integer of 4 digits or less";
     		break;
-    	case "destination":
+    	case "destlocation":
     		if(key.length() > 45 || key.contains("_"))
     			toReturn = "Search field format error, please ensure field does not contain underscores or exceed 45 characters";
     		break;
-    	case "source":
+    	case "sourcelocation":
     		if(key.length() > 45 || key.contains("_"))
     			toReturn = "Search field format error, please ensure field does not contain underscores or exceed 45 characters";
     		break;

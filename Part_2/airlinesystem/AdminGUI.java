@@ -373,13 +373,13 @@ public class AdminGUI {
 					message = adminBE.getTickets();
 				}
 				else if(cBoxFlightParam.getSelectedIndex() == 0){
-					message = adminBE.searchFlights("flightId", flightSearchField.getText());
+					message = adminBE.searchFlights("flightnumber", flightSearchField.getText());
 				}
 				else if(cBoxFlightParam.getSelectedIndex() == 1){
-					message = adminBE.searchFlights("destination", flightSearchField.getText());
+					message = adminBE.searchFlights("destlocation", flightSearchField.getText());
 				}
 				else if(cBoxFlightParam.getSelectedIndex() == 2){
-					message = adminBE.searchFlights("source", flightSearchField.getText());
+					message = adminBE.searchFlights("sourcelocation", flightSearchField.getText());
 				}
 				else if(cBoxFlightParam.getSelectedIndex() == 3){
 					message = adminBE.searchFlights("date", flightSearchField.getText());

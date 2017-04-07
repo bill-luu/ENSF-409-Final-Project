@@ -166,7 +166,7 @@ public class PassengerGUI {
 				else if(cBoxFlightParam.getSelectedIndex() == 2){
 					message = passengerBE.searchFlights("source", flightSearchField.getText());
 				}
-				else if(cBoxFlightParam.getSelectedIndex() == 2){
+				else if(cBoxFlightParam.getSelectedIndex() == 3){
 					message = passengerBE.searchFlights("date", flightSearchField.getText());
 				}
 				if(message.equals("GOOD")) {
