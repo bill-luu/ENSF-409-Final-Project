@@ -12,8 +12,6 @@ public class AirlineThread implements Runnable {
 
 	Socket socket;
 	Database database;
-	private BufferedReader socketInput;
-	private PrintWriter socketOutput;
 	private ObjectInputStream inputObject;
 	private ObjectOutputStream outputObject;
 	
@@ -23,20 +21,20 @@ public class AirlineThread implements Runnable {
 		this.database = database;
 		
 		try {
-			socketInput = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			socketOutput = new PrintWriter(socket.getOutputStream(), true);
-			inputObject = new ObjectInputStream(socket.getInputStream());
+			System.out.println("Thread Started");
 			outputObject = new ObjectOutputStream(socket.getOutputStream());
+			inputObject = new ObjectInputStream(socket.getInputStream());
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public boolean isValidResponse(String[] response, int expectedArgs)
+	public boolean isValidResponse(String[] response, int expectedArgs) throws IOException
 	{
 		if(response.length != expectedArgs) //Check if the number of arguments are correct.
 		{
-			socketOutput.println("Could not parse response");
+			outputObject.writeObject((String)"Could not parse response");
 			return false;
 		}
 		return true;
@@ -48,7 +46,9 @@ public class AirlineThread implements Runnable {
 		while(isRunning)
 		{
 			try {
-				String[] response = socketInput.readLine().split("_");
+//				System.out.println("run");
+				String[] response = ((String)inputObject.readObject()).split("_");
+				System.out.println(response[0]);
 				switch(response[0]){
 					case "SEARCHFLIGHT":
 						if(isValidResponse(response, 4))
@@ -61,29 +61,37 @@ public class AirlineThread implements Runnable {
 					case "GETFLIGHTS":
 						if(isValidResponse(response, 1))
 						{
+							outputObject.writeObject((String)"GOOD");
 							outputObject.writeObject(database.getAllFlights());
 						}
 						break;
 					case "BOOK":
+						System.out.println("Before check");
 						if(isValidResponse(response, 4))
 						{
+							System.out.println("Entering Case BOOK");
 							String flightId = response[1];
 							String firstName = response[2];
 							String lastName = response[3];
 							//Output a ticket
+							System.out.println("Trying to make a ticket");
 							Ticket newTicket = new Ticket(database.getFlight(flightId), flightId, firstName, lastName);
 							database.addTicket(newTicket);
+							outputObject.writeObject((String)"GOOD");
 							outputObject.writeObject(newTicket);
+							System.out.println("Wrote object");
 						}
 						break;
 					case "ADDFLIGHT":
 						if(isValidResponse(response, 1))
 						{
 							try {
-								Thread.sleep(1000);
-							 //Wait to make sure the socket has sent the flight object
+								Thread.sleep(2000);
+							//Wait to make sure the socket has sent the flight object
 							Flight flight = (Flight) inputObject.readObject();
-							socketOutput.println(database.addFlight(flight));
+							System.out.println(flight.getDest());
+							
+							outputObject.writeObject((String)database.addFlight(flight));
 							}
 							catch(Exception e)
 							{
@@ -95,8 +103,7 @@ public class AirlineThread implements Runnable {
 						if(isValidResponse(response, 2))
 						{
 							String ticketId = response[1];
-							socketOutput.println(database.deleteTicket(ticketId));
-
+							outputObject.writeObject((String)database.deleteTicket(ticketId));
 						}
 						break;
 					case "SEARCHTICKET":
@@ -110,6 +117,7 @@ public class AirlineThread implements Runnable {
 					case "GETTICKETS":
 						if(isValidResponse(response, 1))
 						{
+							outputObject.writeObject((String)"GOOD");
 							outputObject.writeObject(database.getAllTickets());
 						}
 						break;
@@ -118,12 +126,11 @@ public class AirlineThread implements Runnable {
 					default:
 						break;
 				}
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 		try{
-			socketInput.close();
 			inputObject.close();
 			outputObject.close();
 			socket.close();	

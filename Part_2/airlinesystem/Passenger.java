@@ -5,9 +5,9 @@ import java.util.ArrayList;
 
 public class Passenger {
     protected PrintWriter ticketWriter;
-    protected PrintWriter socketOut;
+//    protected PrintWriter socketOut;
     protected Socket socket;
-    protected BufferedReader socketIn;
+//    protected BufferedReader socketIn;
     protected ObjectOutputStream outputStream;
     protected ObjectInputStream inputStream;
     public ArrayList<Flight> receivedFlights;
@@ -16,7 +16,13 @@ public class Passenger {
     public Passenger(String serverName, int portNumber) {
         try {
             socket = new Socket(serverName, portNumber);
+            System.out.println("Trying to connect to output");
+			outputStream = new ObjectOutputStream(socket.getOutputStream());
+            System.out.println("Trying to connect to Input");
+            inputStream = new ObjectInputStream(socket.getInputStream());
+
         } catch (IOException e) {
+        	System.out.println("Something went wrong.");
             System.err.println(e.getStackTrace());
         }
     }
@@ -33,10 +39,10 @@ public class Passenger {
         if(format.contains("error"))
         	return format;
         try {
-            socketOut.println("SEARCHFLIGHT_" + param + "_" + key);
-            response = socketIn.readLine();
-            if (!response.equals("GOOD")) {
-                inputStream = new ObjectInputStream(socket.getInputStream());
+            outputStream.writeObject((String)"SEARCHFLIGHT_" + param + "_" + key);
+            response = (String)inputStream.readObject(); 
+            if (response.equals("GOOD")) {
+               // inputStream = new ObjectInputStream(socket.getInputStream());
                 receivedFlights = (ArrayList<Flight>)inputStream.readObject();
                 return "GOOD";
             }
@@ -57,10 +63,10 @@ public class Passenger {
     public String getFlights() {
         String response = "";
         try {
-            socketOut.println("GETFLIGHTS_");
-            response = socketIn.readLine();
-            if (!response.equals("GOOD")) {
-                inputStream = new ObjectInputStream(socket.getInputStream());
+            outputStream.writeObject((String)"GETFLIGHTS_");
+            response = (String)inputStream.readObject();
+            if (response.equals("GOOD")) {
+                //inputStream = new ObjectInputStream(socket.getInputStream());
                 receivedFlights = (ArrayList<Flight>)inputStream.readObject();
                 return "GOOD";
             }
@@ -84,10 +90,11 @@ public class Passenger {
         if(format.contains("ERROR"))
         	return format;
         try {
-            socketOut.println("BOOK_" + firstName + lastName + flightNumber);
-            response = socketIn.readLine();
-            if (!response.equals("GOOD")) {
-                inputStream = new ObjectInputStream(socket.getInputStream());
+            outputStream.writeObject((String)"BOOK_" + flightNumber + "_" + firstName + "_" + lastName);
+            response = (String)inputStream.readObject();
+            if (response.equals("GOOD")) {
+              //  inputStream = new ObjectInputStream(socket.getInputStream());
+            	Thread.sleep(10);
                 Ticket printedTicket = (Ticket)inputStream.readObject();
                 printTicket(printedTicket);
                 return "Ticket Successfully Booked!";
@@ -103,6 +110,11 @@ public class Passenger {
         catch (ClassNotFoundException e) {
             System.err.println(e.getStackTrace());
             return "A ClassNotFound Exception occured";
+        }
+        catch(Exception e)
+        {
+        	e.printStackTrace();
+        	return "An exception occured";
         }
     }
 
@@ -168,5 +180,21 @@ public class Passenger {
 			return "ERROR_" + toReturn;
 		}
 		return "GOOD FORMAT";
+    }
+
+    public void quitServer()
+    {
+        try{
+            outputStream.writeObject((String)"QUIT_");
+            socket.close();
+//            socketIn.close();
+//            socketOut.close();
+            outputStream.close();
+            inputStream.close();
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 }

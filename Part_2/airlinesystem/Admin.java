@@ -112,10 +112,10 @@ public class Admin extends Passenger {
 	        if(format.contains("error"))
 	        	return format;
 	        try {
-	            socketOut.println("SEARCHTICKET_" + param + "_" + key);
-	            response = socketIn.readLine();
-	            if (!response.equals("GOOD")) {
-	                inputStream = new ObjectInputStream(socket.getInputStream());
+	           outputStream.writeObject((String)"SEARCHTICKET_" + param + "_" + key);
+	            response = (String)inputStream.readObject();
+	            if (response.equals("GOOD")) {
+	               // inputStream = new ObjectInputStream(socket.getInputStream());
 	                receivedTickets = (ArrayList<Ticket>) inputStream.readObject();
 	                return "GOOD";
 	            }
@@ -137,15 +137,19 @@ public class Admin extends Passenger {
 	        String response = "";
 
 	        try {
-	            socketOut.println("GETTICKETS_");
-	            response = socketIn.readLine();
-	            if (!response.equals("GOOD")) {
-	                inputStream = new ObjectInputStream(socket.getInputStream());
+	           outputStream.writeObject((String)"GETTICKETS_");
+	           Thread.sleep(10);
+	            response = (String)inputStream.readObject();
+	            if (response.equals("GOOD")) {
+	                //inputStream = new ObjectInputStream(socket.getInputStream());
 	                receivedTickets = (ArrayList<Ticket>) inputStream.readObject();
-	                return "GOOD";
+	                if(!receivedTickets.isEmpty())
+	                	return "GOOD";
+	                else
+	                	return "No tickets could be found";
 	            }
 	            else {
-	                return "No tickets could be found";
+	                return "Could not get tickets";
 	            }
 	        }
 	        catch (IOException e) {
@@ -156,6 +160,11 @@ public class Admin extends Passenger {
 				System.err.println(e.getStackTrace());
 				return "A ClassNotFound Exception occured";
 			}
+	        catch (Exception e)
+	        {
+	        	e.printStackTrace();
+	        	return "Other error occured";
+	        }
 	    }
 	
 	public String addFlight(Flight flightToAdd){
@@ -164,13 +173,14 @@ public class Admin extends Passenger {
 			return toReturn;
 		String response = "";
 		 try {
-	            socketOut.println("BOOK_");
-	            outputStream = new ObjectOutputStream(socket.getOutputStream());
+	           outputStream.writeObject((String)"ADDFLIGHT_");
+	          //  outputStream = new ObjectOutputStream(socket.getOutputStream());
+	           Thread.sleep(500);
 	            outputStream.writeObject(flightToAdd);
-	            response = socketIn.readLine();
+	            response = (String)inputStream.readObject();
 	            return response;
-	        } catch (IOException e) {
-	            System.err.println(e.getStackTrace());
+	        } catch (Exception e) {
+	            e.printStackTrace();
 	            return "An IO Exception occured...";
 	        }
 	} 
@@ -178,10 +188,10 @@ public class Admin extends Passenger {
 	public String deleteTicket(String ticketNumber){
 		String response = "";
 		try{
-			socketOut.println("DELETE_" + ticketNumber);
-			response = socketIn.readLine();
+			outputStream.writeObject((String)"DELETE_" + ticketNumber);
+			response = (String)inputStream.readObject();
 			return response;
-		} catch (IOException e) {
+		} catch (Exception e) {
             System.err.println(e.getStackTrace());
             return "An IO Exception occured...";  
 		}

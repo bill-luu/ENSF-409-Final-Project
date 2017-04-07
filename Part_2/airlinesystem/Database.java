@@ -14,7 +14,6 @@ public class Database {
 
 	private Connection connection;
 	private Statement stmt;
-	private ResultSet rs;
 	
 	public Database()
 	{
@@ -38,9 +37,10 @@ public class Database {
 	public void initializeIds()
 	{
 		//Parse through flight ID
+		ResultSet rs;
 		try
 		{	
-			uniqueFlightId = 0;
+			uniqueFlightId = 1000;
 			stmt = connection.createStatement();
 			String query = "SELECT * FROM flights";
 
@@ -66,7 +66,7 @@ public class Database {
 		
 		try
 		{	
-			uniqueTicketId = 0;
+			uniqueTicketId = 100000;
 			stmt = connection.createStatement();
 			String query = "SELECT * FROM ticket";
 
@@ -75,11 +75,16 @@ public class Database {
 			while(rs.next())
 			{
 				Flight f = getFlight(rs.getString("flightid"));
+				System.out.println(rs.getString("flightid"));
+				System.out.println(f);
+				System.out.println(f.getFlightId());
+				System.out.println(f.getAvailableSeats());
 				Ticket ticket = new Ticket(f, rs.getString("ticketid"), rs.getString("firstname"), rs.getString("lastname"));
-				if(uniqueTicketId < Integer.parseInt(ticket.getFlightId()))
-					uniqueTicketId = Integer.parseInt(ticket.getFlightId());
+				if(uniqueTicketId < Integer.parseInt(ticket.getTicketId()))
+					uniqueTicketId = Integer.parseInt(ticket.getTicketId());
 			}
 			uniqueTicketId++;
+			System.out.println(uniqueTicketId);
 		}
 		catch(SQLException e)
 		{
@@ -89,6 +94,7 @@ public class Database {
 
 	synchronized ArrayList<Flight> searchFlight(String param, String key)
 	{
+		ResultSet rs;
 		try{
 			stmt = connection.createStatement();
 			String query;
@@ -119,6 +125,7 @@ public class Database {
 
 	synchronized ArrayList<Flight> getAllFlights()
 	{
+		ResultSet rs;
 		try{	
 			stmt = connection.createStatement();
 			String query = "SELECT * FROM flights";
@@ -167,7 +174,7 @@ public class Database {
 			preparedStatement.setString(4, flight.getTime());
 			preparedStatement.setString(5, flight.getDuration());
 			preparedStatement.setString(6, flight.getTotalSeats());
-			preparedStatement.setString(7, flight.getAvailableSeats() + changeInRemainingSeats);
+			preparedStatement.setString(7, Integer.toString(Integer.parseInt(flight.getAvailableSeats()) + changeInRemainingSeats));
 			preparedStatement.setString(8, flight.getPrice());
 			preparedStatement.executeUpdate();
 		}
@@ -179,18 +186,31 @@ public class Database {
 
 	synchronized Flight getFlight(String flightId)
 	{
+		ResultSet rs;
 		try{
 			stmt = connection.createStatement();
 			String query;
 
 			query = "SELECT * FROM flights WHERE flightnumber" + " = '" + Integer.parseInt(flightId) + "'";
 			rs = stmt.executeQuery(query);
-
-			Flight flight = new Flight(rs.getString("flightnumber"), rs.getString("destlocation"),
+			Flight flight = null;
+			while(rs.next())
+			{
+				System.out.println(rs.getString("flightnumber"));
+				System.out.println(rs.getString("destlocation"));
+				System.out.println(rs.getString("sourcelocation"));
+				System.out.println(rs.getString("date"));
+				System.out.println(rs.getString("time"));
+				System.out.println(rs.getString("duration"));
+				System.out.println(rs.getString("totalseats"));
+				System.out.println(rs.getString("remainingseats"));
+				System.out.println(rs.getString("price"));
+				flight = new Flight(rs.getString("flightnumber"), rs.getString("destlocation"),
 									   rs.getString("sourcelocation"), rs.getString("date"),
 									   rs.getString("time"), rs.getString("duration"),
 									   rs.getString("totalseats"), rs.getString("remainingseats"),
 									   rs.getString("price")) ;
+			}
 			return flight;
 		}
 		catch(SQLException e){
@@ -210,7 +230,7 @@ public class Database {
 			
 			PreparedStatement prepared = connection.prepareStatement(prep);
 			prepared.setInt(1, uniqueTicketId++);
-			prepared.setInt(2, uniqueFlightId++);
+			prepared.setInt(2, uniqueFlightId);
 			prepared.setString(3, ticket.getFirstName());
 			prepared.setString(4, ticket.getLastName());
 			prepared.setString(5, ticket.getDate());
@@ -231,17 +251,17 @@ public class Database {
 			stmt = connection.createStatement();
 			String prep = "INSERT INTO flights "
 			+ " (flightnumber, destlocation, sourcelocation, date, time, duration, totalseats, remainingseats, price)"
-			+" VALUES(?, ?, ?, ?, ?, ?)"; 
+			+" VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)"; 
 
 			PreparedStatement prepared = connection.prepareStatement(prep);
-			prepared.setInt(1, Integer.parseInt(flight.getFlightId()));
-			prepared.setString(2, flight.getSrc());
-			prepared.setString(3, flight.getDest());
+			prepared.setInt(1, ++uniqueFlightId);
+			prepared.setString(2, flight.getDest());
+			prepared.setString(3, flight.getSrc());
 			prepared.setString(4, flight.getDate());
 			prepared.setString(5, flight.getTime());
 			prepared.setString(6, flight.getDuration());
 			prepared.setInt(7, Integer.parseInt(flight.getTotalSeats()));
-			prepared.setInt(8, Integer.parseInt(flight.getAvailableSeats()));
+			prepared.setInt(8, Integer.parseInt(flight.getTotalSeats())); //Available Seats = Total Seats
 			prepared.setString(9, flight.getPrice());
 			prepared.executeUpdate();
 
@@ -276,6 +296,7 @@ public class Database {
 
 	synchronized Ticket getTicket(String ticketId)
 	{
+		ResultSet rs;
 		try{
 			stmt = connection.createStatement();
 			String query;
@@ -309,6 +330,7 @@ public class Database {
 	}
 	synchronized ArrayList<Ticket> searchTicket(String param, String key)
 	{
+		ResultSet rs;
 		try{
 			stmt = connection.createStatement();
 			String query;
@@ -335,6 +357,7 @@ public class Database {
 	
 	synchronized ArrayList<Ticket> getAllTickets()
 	{
+		ResultSet rs;
 		try{	
 			stmt = connection.createStatement();
 			String query = "SELECT * FROM ticket";
@@ -345,7 +368,7 @@ public class Database {
 			while(rs.next())
 			{
 				Flight f = getFlight(rs.getString("flightid"));
-				Ticket ticket = new Ticket(f, rs.getString("ticketid"), rs.getString("firstname"), rs.getString("lastname"));
+				Ticket ticket = new Ticket(f.getFlightId(), f.getDest(), f.getSrc(), f.getDate(), f.getTime(), f.getDuration(), f.getTotalSeats(), f.getAvailableSeats(), f.getPrice(), rs.getString("ticketid"), rs.getString("firstname"), rs.getString("lastname"));
 				ticketList.add(ticket);
 			}
 			return ticketList;

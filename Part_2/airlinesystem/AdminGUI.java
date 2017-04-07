@@ -1,41 +1,23 @@
-package Final_Project;
+package airlinesystem;
 
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import java.awt.CardLayout;
-//import javax.swing.JSplitPane;
 import javax.swing.JPanel;
-//import javax.swing.JInternalFrame;
-//import javax.swing.JDesktopPane;
-//import javax.swing.JSeparator;
-//import java.awt.FlowLayout;
-//import javax.swing.BoxLayout;
-//import java.awt.BorderLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-//import javax.swing.JRadioButton;
 import java.awt.Font;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-//import javax.swing.border.BevelBorder;
-//import java.awt.Color;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-//import javax.swing.DropMode;
-//import javax.swing.SpringLayout;
-//import javax.swing.GroupLayout;
-//import javax.swing.GroupLayout.Alignment;
 import javax.swing.SwingConstants;
 import javax.swing.JTextPane;
-//import javax.swing.border.LineBorder;
-//import javax.swing.border.SoftBevelBorder;
-//import java.awt.GridLayout;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
@@ -108,7 +90,7 @@ public class AdminGUI {
 	 * Create the application.
 	 */
 	public AdminGUI() {
-		adminBE = new Admin("localhost", 9595);
+		adminBE = new Admin("localhost", 9090);
 		initialize();
 	}
 
@@ -123,7 +105,7 @@ public class AdminGUI {
 		frmAdminApplication.addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		    		//adminBE.quitServer();
+		    		adminBE.quitServer();
 		            System.exit(0);
 		        }
 		    }
@@ -433,7 +415,7 @@ public class AdminGUI {
 				flightList.setSelectedIndex(-1);
 				String message = null;
 				if(cBoxFlightParam.getSelectedIndex() == -1 || flightSearchField.getText().length() == 0){
-					message = adminBE.getTickets();
+					message = adminBE.getFlights();
 				}
 				else if(cBoxFlightParam.getSelectedIndex() == 0){
 					message = adminBE.searchFlights("flightId", flightSearchField.getText());
@@ -537,7 +519,8 @@ public class AdminGUI {
 		JButton btnAddFlight = new JButton("Add Flight");
 		btnAddFlight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Flight flightToAdd = new Flight(addDestField.getText(), addDepartField.getText(), addDoDField.getText(), addToDField.getText(), addDoFField.getText(), addSeatsField.getText(), addPriceField.getText());
+//				Flight flightToAdd = new Flight(addDestField.getText(), addDepartField.getText(), addDoDField.getText(), addToDField.getText(), addDoFField.getText(), addSeatsField.getText(), addPriceField.getText());
+				Flight flightToAdd = new Flight("test", "test", "10/10/2020", "10:10", "100:10:10", "100", "10");
 				String messages = adminBE.addFlight(flightToAdd);
 				if(messages.contains("ERROR")){
 					String[] str = messages.split("_");

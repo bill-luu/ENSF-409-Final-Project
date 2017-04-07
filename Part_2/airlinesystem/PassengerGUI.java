@@ -1,39 +1,24 @@
-package Final_Project;
+package airlinesystem;
 
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import java.awt.CardLayout;
-//import javax.swing.JSplitPane;
 import javax.swing.JPanel;
-//import javax.swing.JInternalFrame;
-//import javax.swing.JDesktopPane;
-//import javax.swing.JSeparator;
-//import java.awt.FlowLayout;
-//import javax.swing.BoxLayout;
-//import java.awt.BorderLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-//import javax.swing.JRadioButton;
 import java.awt.Font;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.border.BevelBorder;
-//import java.awt.Color;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-//import javax.swing.DropMode;
-//import javax.swing.SpringLayout;
-//import javax.swing.GroupLayout;
-//import javax.swing.GroupLayout.Alignment;
 import javax.swing.SwingConstants;
 import javax.swing.JTextPane;
-//import javax.swing.border.LineBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
@@ -76,7 +61,7 @@ public class PassengerGUI {
 	 * Create the application.
 	 */
 	public PassengerGUI() {
-		passengerBE = new Passenger("localhost", 9595);
+		passengerBE = new Passenger("localhost", 9090);
 		initialize();
 	}
 
@@ -88,11 +73,11 @@ public class PassengerGUI {
 		frmPassengerApplication.setResizable(false);
 		frmPassengerApplication.setTitle("Passenger Application");
 		frmPassengerApplication.setBounds(100, 100, 720, 540);
-		frmPassengerApplication.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frmPassengerApplication.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmPassengerApplication.addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		    		//passengerBE.quitServer();
+		    		passengerBE.quitServer();
 		            System.exit(0);
 		        }
 		    }
