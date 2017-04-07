@@ -431,8 +431,10 @@ public class AdminGUI {
 				}
 				if(message.equals("GOOD")) {
 					DefaultListModel<String> DLM = new DefaultListModel<String>();
-					for(int i = 0; i < adminBE.receivedFlights.size(); i++)
-						DLM.addElement(adminBE.receivedFlights.get(i).toDisplay());
+					for(int i = 0; i < adminBE.receivedFlights.size(); i++){
+						Flight flight = adminBE.receivedFlights.get(i);
+						DLM.addElement(flight.toDisplay());
+					}
 					flightList.setModel(DLM);
 				}
 				else{
