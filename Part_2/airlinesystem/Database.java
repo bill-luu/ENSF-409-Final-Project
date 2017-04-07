@@ -149,7 +149,7 @@ public class Database {
 		}
 	}
 
-	synchronized void changeSeats(Flight flight, int changeInRemainingSeats)
+	synchronized void changeSeats(Flight flight, int changeInRemainingSeats) throws SeatException
 	{
 		try{
 			String prep = "UPDATE flights "
@@ -162,6 +162,11 @@ public class Database {
 						+ ", remainingseats= ?"
 						+ ", price= ?"
 						+ "WHERE flightnumber= " + flight.getFlightId();
+			int newRemainingSeats = Integer.parseInt(flight.getAvailableSeats()) + changeInRemainingSeats;
+			if(newRemainingSeats < 0)
+			{
+				throw new SeatException();
+			}
 			PreparedStatement preparedStatement = connection.prepareStatement(prep);
 			preparedStatement.setString(1, flight.getDest());
 			preparedStatement.setString(2, flight.getSrc());
@@ -231,6 +236,10 @@ public class Database {
 			e.printStackTrace();
 			return null;
 		}
+		catch(SeatException e)
+		{
+			return null;
+		}
 	}
 
 	synchronized String addFlight(Flight flight)
@@ -275,7 +284,7 @@ public class Database {
 
 			return "Booking removed";
 		}
-		catch(SQLException err)
+		catch(Exception err)
 		{
 			err.printStackTrace();
 			return "Unable to remove booking";

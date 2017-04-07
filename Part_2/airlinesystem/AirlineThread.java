@@ -75,8 +75,15 @@ public class AirlineThread implements Runnable {
 							
 							Ticket newTicket = new Ticket(database.getFlight(flightId), ""+0, firstName, lastName);
 							newTicket = database.addTicket(newTicket);
-							outputObject.writeObject((String)"GOOD");
-							outputObject.writeObject(newTicket);
+							if(newTicket != null)
+							{
+								outputObject.writeObject((String)"GOOD");
+								outputObject.writeObject(newTicket);
+							}
+							else
+							{
+								outputObject.writeObject((String)"BAD");
+							}
 						}
 						break;
 					case "ADDFLIGHT":
