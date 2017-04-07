@@ -1,42 +1,44 @@
-package airlinesystem;
+package Final_Project;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import java.awt.CardLayout;
-import javax.swing.JSplitPane;
+//import javax.swing.JSplitPane;
 import javax.swing.JPanel;
-import javax.swing.JInternalFrame;
-import javax.swing.JDesktopPane;
-import javax.swing.JSeparator;
-import java.awt.FlowLayout;
-import javax.swing.BoxLayout;
-import java.awt.BorderLayout;
+//import javax.swing.JInternalFrame;
+//import javax.swing.JDesktopPane;
+//import javax.swing.JSeparator;
+//import java.awt.FlowLayout;
+//import javax.swing.BoxLayout;
+//import java.awt.BorderLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JRadioButton;
+//import javax.swing.JRadioButton;
 import java.awt.Font;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.border.BevelBorder;
-import java.awt.Color;
+//import javax.swing.border.BevelBorder;
+//import java.awt.Color;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.DropMode;
-import javax.swing.SpringLayout;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
+//import javax.swing.DropMode;
+//import javax.swing.SpringLayout;
+//import javax.swing.GroupLayout;
+//import javax.swing.GroupLayout.Alignment;
 import javax.swing.SwingConstants;
 import javax.swing.JTextPane;
-import javax.swing.border.LineBorder;
-import javax.swing.border.SoftBevelBorder;
-
-import java.awt.GridLayout;
+//import javax.swing.border.LineBorder;
+//import javax.swing.border.SoftBevelBorder;
+//import java.awt.GridLayout;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 
 public class AdminGUI {
 	private Admin adminBE;
@@ -116,9 +118,18 @@ public class AdminGUI {
 	private void initialize() {
 		
 		frmAdminApplication = new JFrame();
+		frmAdminApplication.setResizable(false);
+		frmAdminApplication.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frmAdminApplication.addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		    		//adminBE.quitServer();
+		            System.exit(0);
+		        }
+		    }
+		);
 		frmAdminApplication.setTitle("Admin Application ");
 		frmAdminApplication.setBounds(100, 100, 720, 540);
-		frmAdminApplication.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmAdminApplication.getContentPane().setLayout(new CardLayout(0, 0));
 		
 		JPanel mainPanel = new JPanel();
@@ -331,6 +342,35 @@ public class AdminGUI {
 		browseFlightPanel.add(scrollPane);
 		
 		JList<Flight> flightList = new JList<Flight>();
+		flightList.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if(flightList.getSelectedIndex() == -1){
+					flightIdNumberField.setText("");
+					destField.setText("");
+					departureField.setText("");
+					dateField.setText("");
+					timeField.setText("");
+					durationField.setText("");
+					totalSeatsField.setText("");
+					availableSeatsField.setText("");
+					priceField.setText("");
+					priceTaxField.setText("");
+				}
+				else{
+					Flight flight = flightList.getSelectedValue();
+					flightIdNumberField.setText(flight.getFlightId());
+					destField.setText(flight.getDest());
+					departureField.setText(flight.getSrc());
+					dateField.setText(flight.getDate());
+					timeField.setText(flight.getTime());
+					durationField.setText(flight.getDuration());
+					totalSeatsField.setText(flight.getTotalSeats());
+					availableSeatsField.setText(flight.getAvailableSeats());
+					priceField.setText(flight.getPrice());
+					priceTaxField.setText(flight.getTaxedPrice());
+				}
+			}
+		});
 		flightList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane.setViewportView(flightList);
 		
@@ -345,18 +385,19 @@ public class AdminGUI {
 		btnSearch.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String message = "good";
+				flightList.setSelectedIndex(-1);
+				String message = null;
 				if(cBoxFlightParam.getSelectedIndex() == -1 || flightSearchField.getText().length() == 0){
-					//String message = adminBE.getTickets()
+					message = adminBE.getTickets();
 				}
 				else if(cBoxFlightParam.getSelectedIndex() == 0){
-					//String message = adminBE.searchFlights("flightId", flightSearchField.getText());
+					message = adminBE.searchFlights("flightId", flightSearchField.getText());
 				}
 				else if(cBoxFlightParam.getSelectedIndex() == 1){
-					//String message = adminBE.searchFlights("destination", flightSearchField.getText());
+					message = adminBE.searchFlights("destination", flightSearchField.getText());
 				}
 				else if(cBoxFlightParam.getSelectedIndex() == 2){
-					//String message = adminBE.searchFlights("source", flightSearchField.getText());
+					message = adminBE.searchFlights("source", flightSearchField.getText());
 				}
 				if(message.equals("GOOD")) {
 					DefaultListModel<Flight> DLM = new DefaultListModel<Flight>();
@@ -378,6 +419,7 @@ public class AdminGUI {
 			public void actionPerformed(ActionEvent arg0) {
 				flightSearchField.setText("");
 				cBoxFlightParam.setSelectedIndex(-1);
+				flightList.setSelectedIndex(-1);
 				flightList.removeAll();
 
 			}
@@ -386,8 +428,35 @@ public class AdminGUI {
 		browseFlightPanel.add(btnClear);
 		
 		JButton btnRefresh = new JButton("Refresh Flights");
+		btnRefresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				flightList.setSelectedIndex(-1);
+				String message = null;
+				if(cBoxFlightParam.getSelectedIndex() == -1 || flightSearchField.getText().length() == 0){
+					message = adminBE.getTickets();
+				}
+				else if(cBoxFlightParam.getSelectedIndex() == 0){
+					message = adminBE.searchFlights("flightId", flightSearchField.getText());
+				}
+				else if(cBoxFlightParam.getSelectedIndex() == 1){
+					message = adminBE.searchFlights("destination", flightSearchField.getText());
+				}
+				else if(cBoxFlightParam.getSelectedIndex() == 2){
+					message = adminBE.searchFlights("source", flightSearchField.getText());
+				}
+				if(message.equals("GOOD")) {
+					DefaultListModel<Flight> DLM = new DefaultListModel<Flight>();
+					for(int i = 0; i < adminBE.receivedFlights.size(); i++)
+						DLM.addElement(adminBE.receivedFlights.get(i));
+					flightList.setModel(DLM);
+				}
+				else{
+					JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
+				}
+			}
+		});
 		btnRefresh.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		btnRefresh.setBounds(125, 458, 138, 32);
+		btnRefresh.setBounds(125, 458, 155, 32);
 		browseFlightPanel.add(btnRefresh);
 		
 		JButton btnBack_1 = new JButton("Back");
@@ -420,24 +489,29 @@ public class AdminGUI {
 				browseFlightPanel.setVisible(false);
 			}
 		});
-		btnLoadFlightsFrom.setBounds(273, 458, 247, 32);
+		btnLoadFlightsFrom.setBounds(290, 458, 230, 32);
 		browseFlightPanel.add(btnLoadFlightsFrom);
 		
 		JButton button = new JButton("Book Selected Ticket");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				bFlightIdNumberField.setText(flightIdNumberField.getText());
-				bDestField.setText(destField.getText());
-				bDepartField.setText(departureField.getText());
-				bDateField.setText(dateField.getText());
-				bTimeField.setText(timeField.getText());
-				bDurationField.setText(durationField.getText());
-				bTotalSeatsField.setText(totalSeatsField.getText());
-				bAvailableSeatsField.setText(availableSeatsField.getText());
-				bPriceField.setText(priceField.getText());
-				bPriceTaxField.setText(priceTaxField.getText());
-				bookTicketPanel.setVisible(true);
-				browseFlightPanel.setVisible(false);
+				if(flightList.getSelectedIndex() == -1)
+					JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), "No flight selected");
+				
+				else{
+					bFlightIdNumberField.setText(flightIdNumberField.getText());
+					bDestField.setText(destField.getText());
+					bDepartField.setText(departureField.getText());
+					bDateField.setText(dateField.getText());
+					bTimeField.setText(timeField.getText());
+					bDurationField.setText(durationField.getText());
+					bTotalSeatsField.setText(totalSeatsField.getText());
+					bAvailableSeatsField.setText(availableSeatsField.getText());
+					bPriceField.setText(priceField.getText());
+					bPriceTaxField.setText(priceTaxField.getText());
+					bookTicketPanel.setVisible(true);
+					browseFlightPanel.setVisible(false);
+				}
 			}
 		});
 		button.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -463,7 +537,7 @@ public class AdminGUI {
 		JButton btnAddFlight = new JButton("Add Flight");
 		btnAddFlight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				/*Flight flightToAdd = new Flight(addDestField.getText(), addDepartField.getText(), addDoDField.getText(), addToDField.getText(), addDoFField.getText(), addSeatsField.getText(), addPriceField.getText());
+				Flight flightToAdd = new Flight(addDestField.getText(), addDepartField.getText(), addDoDField.getText(), addToDField.getText(), addDoFField.getText(), addSeatsField.getText(), addPriceField.getText());
 				String messages = adminBE.addFlight(flightToAdd);
 				if(messages.contains("ERROR")){
 					String[] str = messages.split("_");
@@ -474,7 +548,6 @@ public class AdminGUI {
 				else{
 					JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), messages);
 				}
-				*/
 			}
 		});
 		btnAddFlight.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -601,8 +674,8 @@ public class AdminGUI {
 		JButton btnLoadFlights = new JButton("Load Flights");
 		btnLoadFlights.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//String message = adminBE.loadFlights(fileNameField.getText());
-				//JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
+				String message = adminBE.loadFlights(fileNameField.getText());
+				JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
 			}
 		});
 		btnLoadFlights.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -638,23 +711,58 @@ public class AdminGUI {
 		browseTicketPanel.add(scrollPane_1);
 		
 		JList<Ticket> ticketList = new JList<Ticket>();
+		ticketList.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent arg0) {
+				if(ticketList.getSelectedIndex() == -1){
+					tTicketIdNumberField.setText("");
+					tFlightIdNumberField.setText("");
+					tDestField.setText("");
+					tDepartField.setText("");
+					tDoDField.setText("");
+					tToDField.setText("");
+					tDoFField.setText("");
+					tTotalSeatsField.setText("");
+					tFirstNameField.setText("");
+					tLastNameField.setText("");
+					tPriceField.setText("");
+					tPriceTaxField.setText("");
+				}
+				else{
+					Ticket ticket = ticketList.getSelectedValue();
+					tTicketIdNumberField.setText(ticket.getTicketId());
+					tFlightIdNumberField.setText(ticket.getFlightId());
+					tDestField.setText(ticket.getDest());
+					tDepartField.setText(ticket.getSrc());
+					tDoDField.setText(ticket.getDate());
+					tToDField.setText(ticket.getTime());
+					tDoFField.setText(ticket.getDuration());
+					tTotalSeatsField.setText(ticket.getTotalSeats());
+					tFirstNameField.setText(ticket.getFirstName());
+					tLastNameField.setText(ticket.getLastName());
+					tPriceField.setText(ticket.getPrice());
+					tPriceTaxField.setText(ticket.getTaxedPrice());
+				}	
+			}
+		});
+		ticketList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane_1.setViewportView(ticketList);
 		
 		JButton btnTSearch = new JButton("Search");
 		btnTSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String message = "good";
+				ticketList.setSelectedIndex(-1);
+				String message = null;
 				if(cBoxTicketParam.getSelectedIndex() == -1 || ticketSearchField.getText().length() == 0){
-					//String message = adminBE.getTickets()
+					message = adminBE.getTickets();
 				}
 				else if(cBoxTicketParam.getSelectedIndex() == 0){
-					//String message = adminBE.searchTickets("ticketId", ticketSearchField.getText());
+					message = adminBE.searchTickets("ticketId", ticketSearchField.getText());
 				}
 				else if(cBoxTicketParam.getSelectedIndex() == 1){
-					//String message = adminBE.searchTickets("flightId", ticketSearchField.getText());
+					message = adminBE.searchTickets("flightId", ticketSearchField.getText());
 				}
 				else if(cBoxTicketParam.getSelectedIndex() == 2){
-					//String message = adminBE.searchTickets("lastName", ticketSearchField.getText());
+					message = adminBE.searchTickets("lastName", ticketSearchField.getText());
 				}
 				if(message.equals("GOOD")) {
 					DefaultListModel<Ticket> DLM = new DefaultListModel<Ticket>();
@@ -677,6 +785,7 @@ public class AdminGUI {
 			public void actionPerformed(ActionEvent e) {
 				ticketSearchField.setText("");
 				cBoxTicketParam.setSelectedIndex(-1);
+				ticketList.setSelectedIndex(-1);
 				ticketList.removeAll();
 			}
 		});
@@ -684,6 +793,33 @@ public class AdminGUI {
 		browseTicketPanel.add(btnTClear);
 		
 		JButton btnRefreshTickets = new JButton("Refresh Tickets");
+		btnRefreshTickets.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ticketList.setSelectedIndex(-1);
+				String message = null;
+				if(cBoxTicketParam.getSelectedIndex() == -1 || ticketSearchField.getText().length() == 0){
+					message = adminBE.getTickets();
+				}
+				else if(cBoxTicketParam.getSelectedIndex() == 0){
+					message = adminBE.searchTickets("ticketId", ticketSearchField.getText());
+				}
+				else if(cBoxTicketParam.getSelectedIndex() == 1){
+					message = adminBE.searchTickets("flightId", ticketSearchField.getText());
+				}
+				else if(cBoxTicketParam.getSelectedIndex() == 2){
+					message = adminBE.searchTickets("lastName", ticketSearchField.getText());
+				}
+				if(message.equals("GOOD")) {
+					DefaultListModel<Ticket> DLM = new DefaultListModel<Ticket>();
+					for(int i = 0; i < adminBE.receivedTickets.size(); i++)
+						DLM.addElement(adminBE.receivedTickets.get(i));
+					ticketList.setModel(DLM);
+				}
+				else{
+					JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
+				}
+			}
+		});
 		btnRefreshTickets.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnRefreshTickets.setBounds(244, 458, 150, 32);
 		browseTicketPanel.add(btnRefreshTickets);
@@ -869,8 +1005,12 @@ public class AdminGUI {
 		JButton btnDeleteSelectedTicket = new JButton("Delete Selected Ticket");
 		btnDeleteSelectedTicket.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//String message = adminBE.deleteTicket(tTicketIdNumberField.getText());
-				//JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
+				if(ticketList.getSelectedIndex() == -1)
+					JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), "No Ticket Selected");
+				else{
+					String message = adminBE.deleteTicket(tTicketIdNumberField.getText());
+					JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
+				}
 			}
 		});
 		btnDeleteSelectedTicket.setBounds(404, 458, 220, 32);
@@ -914,17 +1054,6 @@ public class AdminGUI {
 		button_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		button_1.setBounds(184, 452, 101, 32);
 		bookTicketPanel.add(button_1);
-		
-		JButton button_2 = new JButton("Confirm Ticket Purchase");
-		button_2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//String message = adminBE.bookTicket(bfirstNameField.getText(), blastNameField.getText(), bFlightIdNumberField.getText());
-				//JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
-			}
-		});
-		button_2.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		button_2.setBounds(317, 452, 254, 32);
-		bookTicketPanel.add(button_2);
 		
 		JButton button_3 = new JButton("Clear Name Fields");
 		button_3.addActionListener(new ActionListener() {
@@ -1072,5 +1201,16 @@ public class AdminGUI {
 		bPriceTaxField.setColumns(10);
 		bPriceTaxField.setBounds(216, 370, 84, 25);
 		panel_1.add(bPriceTaxField);
+		
+		JButton button_2 = new JButton("Confirm Ticket Purchase");
+		button_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String message = adminBE.bookTicket(firstNameField.getText(), lastNameField.getText(), bFlightIdNumberField.getText());
+				JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
+			}
+		});
+		button_2.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		button_2.setBounds(317, 452, 254, 32);
+		bookTicketPanel.add(button_2);
 	}
 }

@@ -1,39 +1,43 @@
-package airlinesystem;
+package Final_Project;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import java.awt.CardLayout;
-import javax.swing.JSplitPane;
+//import javax.swing.JSplitPane;
 import javax.swing.JPanel;
-import javax.swing.JInternalFrame;
-import javax.swing.JDesktopPane;
-import javax.swing.JSeparator;
-import java.awt.FlowLayout;
-import javax.swing.BoxLayout;
-import java.awt.BorderLayout;
+//import javax.swing.JInternalFrame;
+//import javax.swing.JDesktopPane;
+//import javax.swing.JSeparator;
+//import java.awt.FlowLayout;
+//import javax.swing.BoxLayout;
+//import java.awt.BorderLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JRadioButton;
+//import javax.swing.JRadioButton;
 import java.awt.Font;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.border.BevelBorder;
-import java.awt.Color;
+//import java.awt.Color;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.DropMode;
-import javax.swing.SpringLayout;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
+//import javax.swing.DropMode;
+//import javax.swing.SpringLayout;
+//import javax.swing.GroupLayout;
+//import javax.swing.GroupLayout.Alignment;
 import javax.swing.SwingConstants;
 import javax.swing.JTextPane;
-import javax.swing.border.LineBorder;
+//import javax.swing.border.LineBorder;
 import javax.swing.border.SoftBevelBorder;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 
 public class PassengerGUI {
 	Passenger passengerBE;
@@ -81,9 +85,18 @@ public class PassengerGUI {
 	 */
 	private void initialize() {
 		frmPassengerApplication = new JFrame();
+		frmPassengerApplication.setResizable(false);
 		frmPassengerApplication.setTitle("Passenger Application");
 		frmPassengerApplication.setBounds(100, 100, 720, 540);
-		frmPassengerApplication.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmPassengerApplication.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frmPassengerApplication.addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		    		//passengerBE.quitServer();
+		            System.exit(0);
+		        }
+		    }
+		);
 		frmPassengerApplication.getContentPane().setLayout(null);
 		
 		JPanel cardPanel = new JPanel();
@@ -118,24 +131,55 @@ public class PassengerGUI {
 		searchFlightPanel.add(scrollPane);
 		
 		JList<Flight> flightList = new JList<Flight>();
+		flightList.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if(flightList.getSelectedIndex() == -1){
+					flightIdField.setText("");
+					destField.setText("");
+					departField.setText("");
+					dateOfDepartField.setText("");
+					timeOfDepartField.setText("");
+					durationOfFlightField.setText("");
+					totalSeatsField.setText("");
+					availableSeatsField.setText("");
+					priceField.setText("");
+					priceTaxField.setText("");
+				}
+				else{
+					Flight flight = flightList.getSelectedValue();
+					flightIdField.setText(flight.getFlightId());
+					destField.setText(flight.getDest());
+					departField.setText(flight.getSrc());
+					dateOfDepartField.setText(flight.getDate());
+					timeOfDepartField.setText(flight.getTime());
+					durationOfFlightField.setText(flight.getDuration());
+					totalSeatsField.setText(flight.getTotalSeats());
+					availableSeatsField.setText(flight.getAvailableSeats());
+					priceField.setText(flight.getPrice());
+					priceTaxField.setText(flight.getTaxedPrice());
+				}
+			}
+		});
+		flightList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane.setViewportView(flightList);
 		
 		JButton btnSearch = new JButton("Search");
 		btnSearch.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String message = "GOOD";
+				flightList.setSelectedIndex(-1);
+				String message = null;
 				if(cBoxFlightParam.getSelectedIndex() == -1 || flightSearchField.getText().length() == 0){
-					//String message = passengerBE.getFlights();
+					message = passengerBE.getFlights();
 				}
 				else if(cBoxFlightParam.getSelectedIndex() == 0){
-					//String message = passengerBE.searchFlights("flightId", flightSearchField.getText());
+					message = passengerBE.searchFlights("flightId", flightSearchField.getText());
 				}
 				else if(cBoxFlightParam.getSelectedIndex() == 1){
-					//String message = passengerBE.searchFlights("destination", flightSearchField.getText());
+					message = passengerBE.searchFlights("destination", flightSearchField.getText());
 				}
 				else if(cBoxFlightParam.getSelectedIndex() == 2){
-					//String message = passengerBE.searchFights("source", flightSearchField.getText());
+					message = passengerBE.searchFlights("source", flightSearchField.getText());
 				}
 				if(message.equals("GOOD")) {
 					DefaultListModel<Flight> DLM = new DefaultListModel<Flight>();
@@ -157,6 +201,7 @@ public class PassengerGUI {
 			public void actionPerformed(ActionEvent arg0) {
 				flightSearchField.setText("");
 				cBoxFlightParam.setSelectedIndex(-1);
+				flightList.setSelectedIndex(-1);
 				flightList.removeAll();
 			}
 		});
@@ -164,6 +209,34 @@ public class PassengerGUI {
 		searchFlightPanel.add(btnClear);
 		
 		JButton btnRefresh = new JButton("Refresh Flights");
+		btnRefresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//Does the same thing as search, just here for user ease of use
+				flightList.setSelectedIndex(-1);
+				String message = null;
+				if(cBoxFlightParam.getSelectedIndex() == -1 || flightSearchField.getText().length() == 0){
+					message = passengerBE.getFlights();
+				}
+				else if(cBoxFlightParam.getSelectedIndex() == 0){
+					message = passengerBE.searchFlights("flightId", flightSearchField.getText());
+				}
+				else if(cBoxFlightParam.getSelectedIndex() == 1){
+					message = passengerBE.searchFlights("destination", flightSearchField.getText());
+				}
+				else if(cBoxFlightParam.getSelectedIndex() == 2){
+					message = passengerBE.searchFlights("source", flightSearchField.getText());
+				}
+				if(message.equals("GOOD")) {
+					DefaultListModel<Flight> DLM = new DefaultListModel<Flight>();
+					for(int i = 0; i < passengerBE.receivedFlights.size(); i++)
+						DLM.addElement(passengerBE.receivedFlights.get(i));
+					flightList.setModel(DLM);
+				}
+				else{
+					JOptionPane.showMessageDialog(frmPassengerApplication.getComponent(0), message);
+				}
+			}
+		});
 		btnRefresh.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnRefresh.setBounds(10, 452, 150, 32);
 		searchFlightPanel.add(btnRefresh);
@@ -172,8 +245,12 @@ public class PassengerGUI {
 		btnBookSelectedFlight.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnBookSelectedFlight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				bookFlightPanel.setVisible(true);
-				searchFlightPanel.setVisible(false);
+				if(flightList.getSelectedIndex() == -1)
+					JOptionPane.showMessageDialog(frmPassengerApplication.getComponent(0), "No flight selected");
+				else{
+					bookFlightPanel.setVisible(true);
+					searchFlightPanel.setVisible(false);
+				}
 			}
 		});
 		btnBookSelectedFlight.setBounds(170, 452, 205, 32);
@@ -225,8 +302,8 @@ public class PassengerGUI {
 		JButton btnConfirmTicketPurchase = new JButton("Confirm Ticket Purchase");
 		btnConfirmTicketPurchase.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//String message = passengerBE.bookTicket(firstNameField.getText(), lastNameField.getText(), flightIdNumber.getText());
-				//JOptionPane.showMessageDialog(frmPassengerApplication.getComponent(0), message);
+				String message = passengerBE.bookTicket(firstNameField.getText(), lastNameField.getText(), flightIdField.getText());
+				JOptionPane.showMessageDialog(frmPassengerApplication.getComponent(0), message);
 				
 			}
 		});
