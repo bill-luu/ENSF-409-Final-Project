@@ -75,16 +75,11 @@ public class Database {
 			while(rs.next())
 			{
 				Flight f = getFlight(rs.getString("flightid"));
-				System.out.println(rs.getString("flightid"));
-				System.out.println(f);
-				System.out.println(f.getFlightId());
-				System.out.println(f.getAvailableSeats());
 				Ticket ticket = new Ticket(f, rs.getString("ticketid"), rs.getString("firstname"), rs.getString("lastname"));
 				if(uniqueTicketId < Integer.parseInt(ticket.getTicketId()))
 					uniqueTicketId = Integer.parseInt(ticket.getTicketId());
 			}
 			uniqueTicketId++;
-			System.out.println(uniqueTicketId);
 		}
 		catch(SQLException e)
 		{
@@ -196,15 +191,6 @@ public class Database {
 			Flight flight = null;
 			while(rs.next())
 			{
-				System.out.println(rs.getString("flightnumber"));
-				System.out.println(rs.getString("destlocation"));
-				System.out.println(rs.getString("sourcelocation"));
-				System.out.println(rs.getString("date"));
-				System.out.println(rs.getString("time"));
-				System.out.println(rs.getString("duration"));
-				System.out.println(rs.getString("totalseats"));
-				System.out.println(rs.getString("remainingseats"));
-				System.out.println(rs.getString("price"));
 				flight = new Flight(rs.getString("flightnumber"), rs.getString("destlocation"),
 									   rs.getString("sourcelocation"), rs.getString("date"),
 									   rs.getString("time"), rs.getString("duration"),
@@ -230,7 +216,7 @@ public class Database {
 			
 			PreparedStatement prepared = connection.prepareStatement(prep);
 			prepared.setInt(1, uniqueTicketId++);
-			prepared.setInt(2, uniqueFlightId);
+			prepared.setInt(2, Integer.parseInt(ticket.getFlightId()));
 			prepared.setString(3, ticket.getFirstName());
 			prepared.setString(4, ticket.getLastName());
 			prepared.setString(5, ticket.getDate());
@@ -280,10 +266,10 @@ public class Database {
 		{
 			//Statement 
 			stmt = connection.createStatement();
-			String query = "DELETE FROM ticket WHERE ticketid= " + Integer.parseInt(ticketId);
-			stmt.execute(query);
 			Ticket t = getTicket(ticketId);
 			changeSeats(getFlight(t.getFlightId()), 1);
+			String query = "DELETE FROM ticket WHERE ticketid= " + Integer.parseInt(ticketId);
+			stmt.execute(query);
 
 			return "Booking removed";
 		}
@@ -303,9 +289,13 @@ public class Database {
 
 			query = "SELECT * FROM ticket WHERE ticketid" + " = '" + Integer.parseInt(ticketId) + "'";
 			rs = stmt.executeQuery(query);
-			Flight f = getFlight(rs.getString("flightid"));
-			Ticket t = new Ticket(f, rs.getString("ticketid"), rs.getString("firstname"), rs.getString("lastname"));
-	
+			Ticket t = null;
+			while(rs.next())
+			{
+				Flight f = getFlight(rs.getString("flightid"));
+				t = new Ticket(f, rs.getString("ticketid"), rs.getString("firstname"), rs.getString("lastname"));
+			}
+			
 			return t;
 		}
 		catch(SQLException e){
@@ -320,7 +310,7 @@ public class Database {
 		{
 			//Statement 
 			stmt = connection.createStatement();
-			String query = "DELETE FROM flgihts WHERE flightnumber= " + Integer.parseInt(flightId);
+			String query = "DELETE FROM flights WHERE flightnumber= " + Integer.parseInt(flightId);
 			stmt.execute(query);
 		}
 		catch(SQLException err)
@@ -335,7 +325,7 @@ public class Database {
 			stmt = connection.createStatement();
 			String query;
 
-			query = "SELECT * FROM ticket WHERE" + param + " = '" + key + "'";
+			query = "SELECT * FROM ticket WHERE " + param + "= '" + key + "'";
 			rs = stmt.executeQuery(query);
 
 			ArrayList<Ticket> ticketList = new ArrayList<Ticket>();

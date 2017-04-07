@@ -20,12 +20,12 @@ public class Admin extends Passenger {
 	    	String toReturn = "";
 	    	switch (param){
 	    	case "ticketId":
-	    		if(!isNum(key) || key.length() > 4)
-	    			toReturn = "Search field format error, please ensure field is an integer of 4 digits or less";
-	    		break;
-	    	case "flightId":
 	    		if(!isNum(key) || key.length() > 6)
 	    			toReturn = "Search field format error, please ensure field is an integer of 6 digits or less";
+	    		break;
+	    	case "flightId":
+	    		if(!isNum(key) || key.length() > 4)
+	    			toReturn = "Search field format error, please ensure field is an integer of 4 digits or less";
 	    		break;
 	    	case "lastName":
 	    		if(key.length() > 45 || key.contains("_"))
@@ -108,15 +108,17 @@ public class Admin extends Passenger {
 		
 	 public String searchTickets(String param, String key) {
 	        String response = "";
-	        String format = checkFormatFlightSearch(param, key);
+	        String format = checkFormatTicketSearch(param, key);
 	        if(format.contains("error"))
 	        	return format;
 	        try {
 	           outputStream.writeObject((String)"SEARCHTICKET_" + param + "_" + key);
 	            response = (String)inputStream.readObject();
 	            if (response.equals("GOOD")) {
+	            	Thread.sleep(100);
 	               // inputStream = new ObjectInputStream(socket.getInputStream());
 	                receivedTickets = (ArrayList<Ticket>) inputStream.readObject();
+	                System.out.println(receivedTickets.size());
 	                return "GOOD";
 	            }
 	            else {
@@ -131,6 +133,11 @@ public class Admin extends Passenger {
 				System.err.println(e.getStackTrace());
 				return "A ClassNotFound Exception occured";
 			}
+	        catch(Exception e)
+	        {
+	        	e.getStackTrace();
+	        	return "Another exception occured";
+	        }
 	    }
 
 	    public String getTickets() {
@@ -203,7 +210,7 @@ public class Admin extends Passenger {
 			BufferedReader br = new BufferedReader (new FileReader(fileName));
 			String line = br.readLine();
 			while (line != null) {
-				String[] str = line.split("_");
+				String[] str = line.split("		");
 				Flight flightToAdd = new Flight(str[0], str[1], str[2], str[3], str[4], str[5], str[6], str[7], str[8]);
 				response = addFlight(flightToAdd);
 				if(!response.equals("Flight Added Successfully"))

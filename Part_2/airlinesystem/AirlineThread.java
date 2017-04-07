@@ -46,7 +46,6 @@ public class AirlineThread implements Runnable {
 		while(isRunning)
 		{
 			try {
-//				System.out.println("run");
 				String[] response = ((String)inputObject.readObject()).split("_");
 				System.out.println(response[0]);
 				switch(response[0]){
@@ -66,30 +65,25 @@ public class AirlineThread implements Runnable {
 						}
 						break;
 					case "BOOK":
-						System.out.println("Before check");
 						if(isValidResponse(response, 4))
 						{
-							System.out.println("Entering Case BOOK");
 							String flightId = response[1];
 							String firstName = response[2];
 							String lastName = response[3];
 							//Output a ticket
-							System.out.println("Trying to make a ticket");
 							Ticket newTicket = new Ticket(database.getFlight(flightId), flightId, firstName, lastName);
 							database.addTicket(newTicket);
 							outputObject.writeObject((String)"GOOD");
 							outputObject.writeObject(newTicket);
-							System.out.println("Wrote object");
 						}
 						break;
 					case "ADDFLIGHT":
 						if(isValidResponse(response, 1))
 						{
 							try {
-								Thread.sleep(2000);
+								Thread.sleep(100);
 							//Wait to make sure the socket has sent the flight object
 							Flight flight = (Flight) inputObject.readObject();
-							System.out.println(flight.getDest());
 							
 							outputObject.writeObject((String)database.addFlight(flight));
 							}
@@ -111,6 +105,7 @@ public class AirlineThread implements Runnable {
 						{
 							String param = response[1];
 							String key = response[2];
+							outputObject.writeObject((String)"GOOD");
 							outputObject.writeObject(database.searchTicket(param, key));
 						}
 						break;

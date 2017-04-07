@@ -144,8 +144,8 @@ public class Passenger {
     	String toReturn = "";
     	switch (param){
     	case "flightId":
-    		if(!isNum(key) || key.length() > 6)
-    			toReturn = "Search field format error, please ensure field is an integer of 6 digits or less";
+    		if(!isNum(key) || key.length() > 4)
+    			toReturn = "Search field format error, please ensure field is an integer of 4 digits or less";
     		break;
     	case "destination":
     		if(key.length() > 45 || key.contains("_"))
