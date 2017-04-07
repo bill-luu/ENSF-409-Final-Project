@@ -367,6 +367,7 @@ public class AdminGUI {
 		btnSearch.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				try{
 				flightList.setSelectedIndex(-1);
 				String message = null;
 				if(cBoxFlightParam.getSelectedIndex() == -1 || flightSearchField.getText().length() == 0){
@@ -394,6 +395,11 @@ public class AdminGUI {
 					flightList.removeAll();
 					adminBE.receivedFlights.clear();
 					JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
+				}
+			}
+				catch(Exception e)
+				{
+					
 				}
 			}
 		});
@@ -529,8 +535,7 @@ public class AdminGUI {
 		JButton btnAddFlight = new JButton("Add Flight");
 		btnAddFlight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				Flight flightToAdd = new Flight(addDestField.getText(), addDepartField.getText(), addDoDField.getText(), addToDField.getText(), addDoFField.getText(), addSeatsField.getText(), addPriceField.getText());
-				Flight flightToAdd = new Flight("test", "test", "10/10/2020", "10:10", "100:10:10", "100", "10");
+				Flight flightToAdd = new Flight(addDestField.getText(), addDepartField.getText(), addDoDField.getText(), addToDField.getText(), addDoFField.getText(), addSeatsField.getText(), addPriceField.getText());
 				String messages = adminBE.addFlight(flightToAdd);
 				if(messages.contains("ERROR")){
 					String[] str = messages.split("_");
