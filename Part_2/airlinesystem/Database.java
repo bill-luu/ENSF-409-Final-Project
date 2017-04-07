@@ -205,7 +205,7 @@ public class Database {
 		}
 	}
 
-	synchronized void addTicket(Ticket ticket)
+	synchronized Ticket addTicket(Ticket ticket)
 	{
 		try{
 			stmt = connection.createStatement();
@@ -213,9 +213,9 @@ public class Database {
 			+ " (ticketid, flightid, firstname, lastname, date, price)"
 			+" VALUES(?, ?, ?, ?, ?, ?)"; 
 
-			
+			int id = uniqueTicketId++;
 			PreparedStatement prepared = connection.prepareStatement(prep);
-			prepared.setInt(1, uniqueTicketId++);
+			prepared.setInt(1, id);
 			prepared.setInt(2, Integer.parseInt(ticket.getFlightId()));
 			prepared.setString(3, ticket.getFirstName());
 			prepared.setString(4, ticket.getLastName());
@@ -224,10 +224,12 @@ public class Database {
 			prepared.executeUpdate();
 
 			changeSeats(getFlight(ticket.getFlightId()), -1);
+			return getTicket(Integer.toString(id));
 		}
 		catch(SQLException e)
 		{
 			e.printStackTrace();
+			return null;
 		}
 	}
 

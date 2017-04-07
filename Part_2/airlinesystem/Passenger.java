@@ -121,10 +121,13 @@ public class Passenger {
     public void printTicket(Ticket ticketA) {
 
         try {
-            ticketWriter = new PrintWriter("Flight" + ticketA.getFlightId() + "-ticket.txt");
-            ticketWriter.printf("%-6s %-45s %-45s %-4s %-45s %-45s %-10s %-5s %-9s %-45s \n", "Ticket #", "First Name", "Last Name", "Flight #", "Starting Destionation", "Final Destination", "Date of Departure", "Time of Departure", "Duration of Flight", "Total Price of FLight");
+        	System.out.println("Starting Print");
+        	System.out.println(ticketA.getTicketId());
+            ticketWriter = new PrintWriter("Ticket-" + ticketA.getTicketId() + ".txt");
+            ticketWriter.printf("%-6s %-45s %-45s %-4s %-45s %-45s %-10s %-5s %-9s %-45s \n", "Ticket #", "First Name", "Last Name", "Flight #", "Starting Destination", "Final Destination", "Date of Departure", "Time of Departure", "Duration of Flight", "Total Price of FLight");
             ticketWriter.printf("%-6s %-45s %-45s %-4s %-45s %-45s %-10s %-5s %-9s %-45s \n", ticketA.getTicketId(), ticketA.getFirstName(), ticketA.getLastName(), ticketA.getFlightId(), ticketA.getSrc(), ticketA.getDest(), ticketA.getDate(), ticketA.getTime(), ticketA.getDuration(), ticketA.getTaxedPrice());
             ticketWriter.println("Thank you for choosing Air Yeezy");
+            System.out.println("Got Yezzed");
             ticketWriter.close();
         }
         catch (FileNotFoundException e) {

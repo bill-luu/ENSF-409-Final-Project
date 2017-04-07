@@ -72,8 +72,9 @@ public class AirlineThread implements Runnable {
 							String firstName = response[2];
 							String lastName = response[3];
 							//Output a ticket
-							Ticket newTicket = new Ticket(database.getFlight(flightId), flightId, firstName, lastName);
-							database.addTicket(newTicket);
+							
+							Ticket newTicket = new Ticket(database.getFlight(flightId), ""+0, firstName, lastName);
+							newTicket = database.addTicket(newTicket);
 							outputObject.writeObject((String)"GOOD");
 							outputObject.writeObject(newTicket);
 						}
