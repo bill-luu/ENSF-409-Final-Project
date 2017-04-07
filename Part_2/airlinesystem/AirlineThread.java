@@ -50,11 +50,12 @@ public class AirlineThread implements Runnable {
 				System.out.println(response[0]);
 				switch(response[0]){
 					case "SEARCHFLIGHT":
-						if(isValidResponse(response, 4))
+						if(isValidResponse(response, 3))
 						{
 							String param = response[1];
 							String key = response[2];
 							outputObject.writeObject(database.searchFlight(param, key));
+							System.out.println("Search done");
 						}
 						break;
 					case "GETFLIGHTS":

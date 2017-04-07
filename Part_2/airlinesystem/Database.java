@@ -94,7 +94,7 @@ public class Database {
 			stmt = connection.createStatement();
 			String query;
 
-			query = "SELECT * FROM flights WHERE" + param + " = '" + key + "'";
+			query = "SELECT * FROM flights WHERE " + param + "= '" + key + "'";
 			rs = stmt.executeQuery(query);
 			ArrayList<Flight> flightList = new ArrayList<Flight>();
 			

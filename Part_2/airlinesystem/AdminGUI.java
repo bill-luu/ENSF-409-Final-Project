@@ -323,7 +323,7 @@ public class AdminGUI {
 		scrollPane.setBounds(10, 168, 364, 279);
 		browseFlightPanel.add(scrollPane);
 		
-		JList<Flight> flightList = new JList<Flight>();
+		JList<String> flightList = new JList<String>();
 		flightList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				if(flightList.getSelectedIndex() == -1){
@@ -339,7 +339,7 @@ public class AdminGUI {
 					priceTaxField.setText("");
 				}
 				else{
-					Flight flight = flightList.getSelectedValue();
+					Flight flight = adminBE.receivedFlights.get(flightList.getSelectedIndex());
 					flightIdNumberField.setText(flight.getFlightId());
 					destField.setText(flight.getDest());
 					departureField.setText(flight.getSrc());
@@ -373,24 +373,26 @@ public class AdminGUI {
 					message = adminBE.getTickets();
 				}
 				else if(cBoxFlightParam.getSelectedIndex() == 0){
-					message = adminBE.searchFlights("flightId", flightSearchField.getText());
+					message = adminBE.searchFlights("flightnumber", flightSearchField.getText());
 				}
 				else if(cBoxFlightParam.getSelectedIndex() == 1){
-					message = adminBE.searchFlights("destination", flightSearchField.getText());
+					message = adminBE.searchFlights("destlocation", flightSearchField.getText());
 				}
 				else if(cBoxFlightParam.getSelectedIndex() == 2){
-					message = adminBE.searchFlights("source", flightSearchField.getText());
+					message = adminBE.searchFlights("sourcelocation", flightSearchField.getText());
 				}
 				else if(cBoxFlightParam.getSelectedIndex() == 3){
 					message = adminBE.searchFlights("date", flightSearchField.getText());
 				}
 				if(message.equals("GOOD")) {
-					DefaultListModel<Flight> DLM = new DefaultListModel<Flight>();
+					DefaultListModel<String> DLM = new DefaultListModel<String>();
 					for(int i = 0; i < adminBE.receivedFlights.size(); i++)
-						DLM.addElement(adminBE.receivedFlights.get(i));
+						DLM.addElement(adminBE.receivedFlights.get(i).toDisplay());
 					flightList.setModel(DLM);
 				}
 				else{
+					flightList.removeAll();
+					adminBE.receivedFlights.clear();
 					JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
 				}
 			}
@@ -406,6 +408,7 @@ public class AdminGUI {
 				cBoxFlightParam.setSelectedIndex(-1);
 				flightList.setSelectedIndex(-1);
 				flightList.removeAll();
+				adminBE.receivedFlights.clear();
 
 			}
 		});
@@ -430,13 +433,17 @@ public class AdminGUI {
 					message = adminBE.searchFlights("source", flightSearchField.getText());
 				}
 				if(message.equals("GOOD")) {
-					DefaultListModel<Flight> DLM = new DefaultListModel<Flight>();
-					for(int i = 0; i < adminBE.receivedFlights.size(); i++)
-						DLM.addElement(adminBE.receivedFlights.get(i));
+					DefaultListModel<String> DLM = new DefaultListModel<String>();
+					for(int i = 0; i < adminBE.receivedFlights.size(); i++){
+						Flight flight = adminBE.receivedFlights.get(i);
+						DLM.addElement(flight.toDisplay());
+					}
 					flightList.setModel(DLM);
 				}
 				else{
-					JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
+					flightList.removeAll();
+					adminBE.receivedFlights.clear();
+					//JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
 				}
 			}
 		});
@@ -696,7 +703,7 @@ public class AdminGUI {
 		scrollPane_1.setBounds(10, 153, 374, 287);
 		browseTicketPanel.add(scrollPane_1);
 		
-		JList<Ticket> ticketList = new JList<Ticket>();
+		JList<String> ticketList = new JList<String>();
 		ticketList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent arg0) {
 				if(ticketList.getSelectedIndex() == -1){
@@ -714,7 +721,7 @@ public class AdminGUI {
 					tPriceTaxField.setText("");
 				}
 				else{
-					Ticket ticket = ticketList.getSelectedValue();
+					Ticket ticket = adminBE.receivedTickets.get(ticketList.getSelectedIndex());
 					tTicketIdNumberField.setText(ticket.getTicketId());
 					tFlightIdNumberField.setText(ticket.getFlightId());
 					tDestField.setText(ticket.getDest());
@@ -751,12 +758,14 @@ public class AdminGUI {
 					message = adminBE.searchTickets("lastName", ticketSearchField.getText());
 				}
 				if(message.equals("GOOD")) {
-					DefaultListModel<Ticket> DLM = new DefaultListModel<Ticket>();
+					DefaultListModel<String> DLM = new DefaultListModel<String>();
 					for(int i = 0; i < adminBE.receivedTickets.size(); i++)
-						DLM.addElement(adminBE.receivedTickets.get(i));
+						DLM.addElement(adminBE.receivedTickets.get(i).toDisplay());
 					ticketList.setModel(DLM);
 				}
 				else{
+					ticketList.removeAll();
+					adminBE.receivedTickets.clear();
 					JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
 				}
 			}
@@ -773,6 +782,7 @@ public class AdminGUI {
 				cBoxTicketParam.setSelectedIndex(-1);
 				ticketList.setSelectedIndex(-1);
 				ticketList.removeAll();
+				adminBE.receivedTickets.clear();
 			}
 		});
 		btnTClear.setBounds(256, 67, 109, 32);
@@ -796,13 +806,15 @@ public class AdminGUI {
 					message = adminBE.searchTickets("lastName", ticketSearchField.getText());
 				}
 				if(message.equals("GOOD")) {
-					DefaultListModel<Ticket> DLM = new DefaultListModel<Ticket>();
+					DefaultListModel<String> DLM = new DefaultListModel<String>();
 					for(int i = 0; i < adminBE.receivedTickets.size(); i++)
-						DLM.addElement(adminBE.receivedTickets.get(i));
+						DLM.addElement(adminBE.receivedTickets.get(i).toDisplay());
 					ticketList.setModel(DLM);
 				}
 				else{
-					JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
+					ticketList.removeAll();
+					adminBE.receivedTickets.clear();
+					//JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
 				}
 			}
 		});

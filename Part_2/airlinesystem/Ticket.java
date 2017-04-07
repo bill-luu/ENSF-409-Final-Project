@@ -28,4 +28,9 @@ public class Ticket extends Flight {
 	public String getLastName(){
 		return lastName;
 	}
+	
+	public String toDisplay(){
+		String toReturn = ticketId + "     " + getFlightId() + "     " + getLastName() + "     " + getFirstName();
+		return toReturn;
+	}
 }
