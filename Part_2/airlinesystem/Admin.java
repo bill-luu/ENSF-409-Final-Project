@@ -88,23 +88,6 @@ public class Admin extends Passenger {
 		}
 		return "GOOD FORMAT";
 	}
-	
-	public boolean isValidDate(String date){
-		//code obtained and edited from http://stackoverflow.com/questions/15491894/regex-to-validate-date-format-dd-mm-yyyy
-		if(!date.matches("^(?=\\d{2}([/])\\d{2}\\1\\d{4}$)(?:0[1-9]|1\\d|[2][0-8]|29(?!.02.(?!(?!(?:[02468][1-35-79]|[13579]"
-				+ "[0-13-57-9])00)\\d{2}(?:[02468][048]|[13579][26])))|30(?!.02)|31(?=.(?:0[13578]|10|12))).(?:0[1-9]|1[012]).\\d{4}$"))
-			return false;
-		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-		Date currententDate = new Date();
-		try{
-			Date flightDate = format.parse(date);
-			if(!flightDate.after(currententDate))
-				return false;
-		}catch (Exception e){
-			return false;
-		}
-		return true;
-	}
 		
 	 public String searchTickets(String param, String key) {
 	        String response = "";
