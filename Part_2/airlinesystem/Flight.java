@@ -1,5 +1,6 @@
 package airlinesystem;
 import java.io.Serializable;
+import java.text.DecimalFormat;
 
 public class Flight implements Serializable{
 	private String flightId;
@@ -74,7 +75,7 @@ public class Flight implements Serializable{
 	public String getTaxedPrice(){
 		Double prc = Double.parseDouble(price);
 		prc *= 1.07;
-		String[] str =  prc.toString().split(".");
-		return str[0] + "." + str[1].substring(0, 2);
+		String toReturn = String.format("%.2f", prc);
+		return toReturn;
 	}
 }
