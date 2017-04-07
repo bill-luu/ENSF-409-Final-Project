@@ -30,7 +30,7 @@ public class Ticket extends Flight {
 	}
 	
 	public String toDisplay(){
-		String toReturn = ticketId + "     " + getFlightId() + "     " + getLastName() + "     " + getFirstName();
+		String toReturn = ticketId + ",     " + getFlightId() + ",     " + getLastName() + ",     " + getFirstName();
 		return toReturn;
 	}
 }

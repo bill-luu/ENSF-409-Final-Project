@@ -34,7 +34,7 @@ public class Flight implements Serializable{
 		price = prc;
 	}
 	public String toDisplay(){
-		String toReturn = flightId + "     " + destination + "     " + source + "     " + dateOfFlight;
+		String toReturn = flightId + ", To: " + destination + ", From: " + source + ",     " + dateOfFlight;
 		return toReturn;
 	}
 	public boolean hasAvailableSeats(){
