@@ -88,23 +88,6 @@ public class Admin extends Passenger {
 		}
 		return "GOOD FORMAT";
 	}
-	
-	public boolean isValidDate(String date){
-		//code obtained and edited from http://stackoverflow.com/questions/15491894/regex-to-validate-date-format-dd-mm-yyyy
-		if(!date.matches("^(?=\\d{2}([/])\\d{2}\\1\\d{4}$)(?:0[1-9]|1\\d|[2][0-8]|29(?!.02.(?!(?!(?:[02468][1-35-79]|[13579]"
-				+ "[0-13-57-9])00)\\d{2}(?:[02468][048]|[13579][26])))|30(?!.02)|31(?=.(?:0[13578]|10|12))).(?:0[1-9]|1[012]).\\d{4}$"))
-			return false;
-		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-		Date currententDate = new Date();
-		try{
-			Date flightDate = format.parse(date);
-			if(!flightDate.after(currententDate))
-				return false;
-		}catch (Exception e){
-			return false;
-		}
-		return true;
-	}
 		
 	 public String searchTickets(String param, String key) {
 	        String response = "";
@@ -208,10 +191,12 @@ public class Admin extends Passenger {
 		String response;
 		try{
 			BufferedReader br = new BufferedReader (new FileReader(fileName));
+			System.out.println("File exists.");
 			String line = br.readLine();
 			while (line != null) {
+				System.out.println(line);
 				String[] str = line.split("		");
-				Flight flightToAdd = new Flight(str[0], str[1], str[2], str[3], str[4], str[5], str[6], str[7], str[8]);
+				Flight flightToAdd = new Flight(str[0], str[1], str[2], str[3], str[4], str[5], str[6]);
 				response = addFlight(flightToAdd);
 				if(!response.equals("Flight Added Successfully"))
 					return "The following error occured while loading flights into database: " + response;

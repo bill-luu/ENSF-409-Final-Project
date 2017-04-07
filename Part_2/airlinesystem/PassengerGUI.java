@@ -106,7 +106,7 @@ public class PassengerGUI {
 		
 		JComboBox<String> cBoxFlightParam = new JComboBox<String>();
 		cBoxFlightParam.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		cBoxFlightParam.setModel(new DefaultComboBoxModel<String>(new String[] {"Search by Departure Location", "Search by Destination Location", "Search by Date of Departure"}));
+		cBoxFlightParam.setModel(new DefaultComboBoxModel(new String[] {"Flight Id Number", "Destination Location", "Departure Location", "Date of Departure"}));
 		cBoxFlightParam.setBounds(10, 59, 232, 32);
 		cBoxFlightParam.setSelectedIndex(-1);
 		searchFlightPanel.add(cBoxFlightParam);
@@ -165,6 +165,9 @@ public class PassengerGUI {
 				}
 				else if(cBoxFlightParam.getSelectedIndex() == 2){
 					message = passengerBE.searchFlights("source", flightSearchField.getText());
+				}
+				else if(cBoxFlightParam.getSelectedIndex() == 3){
+					message = passengerBE.searchFlights("date", flightSearchField.getText());
 				}
 				if(message.equals("GOOD")) {
 					DefaultListModel<String> DLM = new DefaultListModel<String>();

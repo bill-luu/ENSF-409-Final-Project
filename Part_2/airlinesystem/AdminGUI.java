@@ -358,7 +358,7 @@ public class AdminGUI {
 		
 		JComboBox<String> cBoxFlightParam = new JComboBox<String>();
 		cBoxFlightParam.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		cBoxFlightParam.setModel(new DefaultComboBoxModel<String>(new String[] {"Departure Location", "Destination Location", "Date of Departure"}));
+		cBoxFlightParam.setModel(new DefaultComboBoxModel(new String[] {"Flight Id Number", "Destination Location", "Departure Location", "Date of Departure"}));
 		cBoxFlightParam.setBounds(10, 57, 236, 32);
 		cBoxFlightParam.setSelectedIndex(-1);
 		browseFlightPanel.add(cBoxFlightParam);
@@ -373,13 +373,16 @@ public class AdminGUI {
 					message = adminBE.getTickets();
 				}
 				else if(cBoxFlightParam.getSelectedIndex() == 0){
-					message = adminBE.searchFlights("flightId", flightSearchField.getText());
+					message = adminBE.searchFlights("flightnumber", flightSearchField.getText());
 				}
 				else if(cBoxFlightParam.getSelectedIndex() == 1){
-					message = adminBE.searchFlights("destination", flightSearchField.getText());
+					message = adminBE.searchFlights("destlocation", flightSearchField.getText());
 				}
 				else if(cBoxFlightParam.getSelectedIndex() == 2){
-					message = adminBE.searchFlights("source", flightSearchField.getText());
+					message = adminBE.searchFlights("sourcelocation", flightSearchField.getText());
+				}
+				else if(cBoxFlightParam.getSelectedIndex() == 3){
+					message = adminBE.searchFlights("date", flightSearchField.getText());
 				}
 				if(message.equals("GOOD")) {
 					DefaultListModel<String> DLM = new DefaultListModel<String>();

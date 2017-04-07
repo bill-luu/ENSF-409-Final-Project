@@ -33,10 +33,17 @@ public class Flight implements Serializable{
 		totalSeats = tS;
 		price = prc;
 	}
+	
 	public String toDisplay(){
-		String toReturn = flightId + "		" + destination + "		" + source;
-		return toReturn;
+		String paddedDest = this.destination;
+		String paddedSrc = this.source;
+		while(paddedDest.length() != 45)
+			paddedDest += " ";
+		while(paddedSrc.length() != 45)
+			paddedSrc += " ";
+		return this.flightId + "  " + paddedDest + "  " + paddedSrc + "  " + this.dateOfFlight;
 	}
+	
 	public boolean hasAvailableSeats(){
 		if(Integer.getInteger(availableSeats) <= 0)
 			return false;

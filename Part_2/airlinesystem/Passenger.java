@@ -1,7 +1,9 @@
 package airlinesystem;
 import java.io.*;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Passenger {
     protected PrintWriter ticketWriter;
@@ -40,15 +42,13 @@ public class Passenger {
         	return format;
         try {
             outputStream.writeObject((String)"SEARCHFLIGHT_" + param + "_" + key);
-            response = (String)inputStream.readObject(); 
-            if (response.equals("GOOD")) {
-               // inputStream = new ObjectInputStream(socket.getInputStream());
-                receivedFlights = (ArrayList<Flight>)inputStream.readObject();
-                return "GOOD";
+            receivedFlights = (ArrayList<Flight>)inputStream.readObject();
+            if(receivedFlights.isEmpty())
+            {
+            	 return "The flight you were looking for could not be found";
             }
-            else {
-                return "The flight you were looking for could not be found";
-            }
+            else
+            	return "GOOD";
         }
         catch (IOException e) {
             System.err.println(e.getStackTrace());
@@ -121,9 +121,19 @@ public class Passenger {
     public void printTicket(Ticket ticketA) {
 
         try {
-            ticketWriter = new PrintWriter("Flight" + ticketA.getFlightId() + "-ticket.txt");
-            ticketWriter.printf("%5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s", "Ticket #", "First Name", "Last Name", "Flight #", "Starting Destionation", "Final Destination", "Date of Departure", "Time of Departure", "Duration of Flight", "Total Price of FLight");
-            ticketWriter.printf("%5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s, %5s", ticketA.getTicketId(), ticketA.getFirstName(), ticketA.getLastName(), ticketA.getFlightId(), ticketA.getSrc(), ticketA.getDest(), ticketA.getDate(), ticketA.getTime(), ticketA.getDuration(), ticketA.getTaxedPrice());
+            ticketWriter = new PrintWriter("Ticket" + ticketA.getTicketId() + ".txt");
+            ticketWriter.println("Your Ticket Information");
+            ticketWriter.println("Ticket #: " + ticketA.getFlightId()); 
+            ticketWriter.println("First Name: " + ticketA.getFirstName());
+            ticketWriter.println("Last Name: " + ticketA.getLastName());
+            ticketWriter.println("Flight #: " + ticketA.getFlightId());
+			ticketWriter.println("Starting Destination: " + ticketA.getSrc());
+			ticketWriter.println("Final Destination: " + ticketA.getDest());
+			ticketWriter.println("Date of Departure: " + ticketA.getDate());
+			ticketWriter.println("Time of Departure: " + ticketA.getTime());
+			ticketWriter.println("Duration of Flight: " + ticketA.getDuration());
+			ticketWriter.println("Price of Flight (+ tax): " + ticketA.getTaxedPrice());
+            ticketWriter.println("Thank you for choosing Air Yeezy");
             ticketWriter.close();
         }
         catch (FileNotFoundException e) {
@@ -139,21 +149,42 @@ public class Passenger {
 		    }
 		    return true;
 	}
+    
+    public boolean isValidDate(String date){
+		//code obtained and edited from http://stackoverflow.com/questions/15491894/regex-to-validate-date-format-dd-mm-yyyy
+		if(!date.matches("^(?=\\d{2}([/])\\d{2}\\1\\d{4}$)(?:0[1-9]|1\\d|[2][0-8]|29(?!.02.(?!(?!(?:[02468][1-35-79]|[13579]"
+				+ "[0-13-57-9])00)\\d{2}(?:[02468][048]|[13579][26])))|30(?!.02)|31(?=.(?:0[13578]|10|12))).(?:0[1-9]|1[012]).\\d{4}$"))
+			return false;
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+		Date currententDate = new Date();
+		try{
+			Date flightDate = format.parse(date);
+			if(!flightDate.after(currententDate))
+				return false;
+		}catch (Exception e){
+			return false;
+		}
+		return true;
+	}
 
     public String checkFormatFlightSearch(String param, String key){
     	String toReturn = "";
     	switch (param){
-    	case "flightId":
+    	case "flightnumber":
     		if(!isNum(key) || key.length() > 4)
     			toReturn = "Search field format error, please ensure field is an integer of 4 digits or less";
     		break;
-    	case "destination":
+    	case "destlocation":
     		if(key.length() > 45 || key.contains("_"))
     			toReturn = "Search field format error, please ensure field does not contain underscores or exceed 45 characters";
     		break;
-    	case "source":
+    	case "sourcelocation":
     		if(key.length() > 45 || key.contains("_"))
     			toReturn = "Search field format error, please ensure field does not contain underscores or exceed 45 characters";
+    		break;
+    	case "date":
+    		if(!isValidDate(key))
+    			toReturn = "Search field format error, please ensure field follows dd/MM/yyyy format";
     		break;
     	default:
     		toReturn = "Unrecognized Parameter error...";

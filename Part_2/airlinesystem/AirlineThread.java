@@ -50,11 +50,12 @@ public class AirlineThread implements Runnable {
 				System.out.println(response[0]);
 				switch(response[0]){
 					case "SEARCHFLIGHT":
-						if(isValidResponse(response, 4))
+						if(isValidResponse(response, 3))
 						{
 							String param = response[1];
 							String key = response[2];
 							outputObject.writeObject(database.searchFlight(param, key));
+							System.out.println("Search done");
 						}
 						break;
 					case "GETFLIGHTS":
@@ -71,8 +72,9 @@ public class AirlineThread implements Runnable {
 							String firstName = response[2];
 							String lastName = response[3];
 							//Output a ticket
-							Ticket newTicket = new Ticket(database.getFlight(flightId), flightId, firstName, lastName);
-							database.addTicket(newTicket);
+							
+							Ticket newTicket = new Ticket(database.getFlight(flightId), ""+0, firstName, lastName);
+							newTicket = database.addTicket(newTicket);
 							outputObject.writeObject((String)"GOOD");
 							outputObject.writeObject(newTicket);
 						}

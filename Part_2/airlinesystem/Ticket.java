@@ -28,4 +28,15 @@ public class Ticket extends Flight {
 	public String getLastName(){
 		return lastName;
 	}
+	
+	public String toDisplay(){
+		String paddedLastName = this.lastName;
+		String paddedFirstName = this.firstName;
+		while(paddedLastName.length() != 45)
+			paddedLastName += " ";
+		while(paddedFirstName.length() != 45)
+			paddedFirstName += " ";
+		String toReturn = this.ticketId + "  " + getFlightId() + "  " + paddedLastName + "  " + paddedFirstName;
+		return toReturn;
+	}
 }
