@@ -251,7 +251,7 @@ public class Database {
 			prepared.setString(9, flight.getPrice());
 			prepared.executeUpdate();
 
-			return "Flight successfully added.";
+			return "Flight Added Successfully";
 		}
 		catch(SQLException e)
 		{

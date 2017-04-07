@@ -191,10 +191,12 @@ public class Admin extends Passenger {
 		String response;
 		try{
 			BufferedReader br = new BufferedReader (new FileReader(fileName));
+			System.out.println("File exists.");
 			String line = br.readLine();
 			while (line != null) {
+				System.out.println(line);
 				String[] str = line.split("		");
-				Flight flightToAdd = new Flight(str[0], str[1], str[2], str[3], str[4], str[5], str[6], str[7], str[8]);
+				Flight flightToAdd = new Flight(str[0], str[1], str[2], str[3], str[4], str[5], str[6]);
 				response = addFlight(flightToAdd);
 				if(!response.equals("Flight Added Successfully"))
 					return "The following error occured while loading flights into database: " + response;
