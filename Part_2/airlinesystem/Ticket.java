@@ -1,3 +1,5 @@
+package airlinesystem;
+
 public class Ticket extends Flight {
 	private String ticketId;
 	private String firstName;

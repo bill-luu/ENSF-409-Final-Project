@@ -1,3 +1,4 @@
+package airlinesystem;
 import java.io.Serializable;
 
 public class Flight implements Serializable{
