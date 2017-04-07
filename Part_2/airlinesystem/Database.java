@@ -219,6 +219,7 @@ public class Database {
 			+" VALUES(?, ?, ?, ?, ?, ?)"; 
 
 			int id = uniqueTicketId++;
+			changeSeats(getFlight(ticket.getFlightId()), -1);
 			PreparedStatement prepared = connection.prepareStatement(prep);
 			prepared.setInt(1, id);
 			prepared.setInt(2, Integer.parseInt(ticket.getFlightId()));
@@ -228,7 +229,7 @@ public class Database {
 			prepared.setString(6, ticket.getPrice());
 			prepared.executeUpdate();
 
-			changeSeats(getFlight(ticket.getFlightId()), -1);
+			
 			return getTicket(Integer.toString(id));
 		}
 		catch(SQLException e)
