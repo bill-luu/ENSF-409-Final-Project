@@ -106,7 +106,7 @@ public class PassengerGUI {
 		
 		JComboBox<String> cBoxFlightParam = new JComboBox<String>();
 		cBoxFlightParam.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		cBoxFlightParam.setModel(new DefaultComboBoxModel<String>(new String[] {"Search by Departure Location", "Search by Destination Location", "Search by Date of Departure"}));
+		cBoxFlightParam.setModel(new DefaultComboBoxModel(new String[] {"Flight Id Number", "Destination Location", "Departure Location", "Date of Departure"}));
 		cBoxFlightParam.setBounds(10, 59, 232, 32);
 		cBoxFlightParam.setSelectedIndex(-1);
 		searchFlightPanel.add(cBoxFlightParam);
@@ -115,7 +115,7 @@ public class PassengerGUI {
 		scrollPane.setBounds(10, 156, 365, 285);
 		searchFlightPanel.add(scrollPane);
 		
-		JList<Flight> flightList = new JList<Flight>();
+		JList<String> flightList = new JList<String>();
 		flightList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				if(flightList.getSelectedIndex() == -1){
@@ -131,7 +131,7 @@ public class PassengerGUI {
 					priceTaxField.setText("");
 				}
 				else{
-					Flight flight = flightList.getSelectedValue();
+					Flight flight = passengerBE.receivedFlights.get(flightList.getSelectedIndex());
 					flightIdField.setText(flight.getFlightId());
 					destField.setText(flight.getDest());
 					departField.setText(flight.getSrc());
@@ -166,13 +166,18 @@ public class PassengerGUI {
 				else if(cBoxFlightParam.getSelectedIndex() == 2){
 					message = passengerBE.searchFlights("source", flightSearchField.getText());
 				}
+				else if(cBoxFlightParam.getSelectedIndex() == 3){
+					message = passengerBE.searchFlights("date", flightSearchField.getText());
+				}
 				if(message.equals("GOOD")) {
-					DefaultListModel<Flight> DLM = new DefaultListModel<Flight>();
+					DefaultListModel<String> DLM = new DefaultListModel<String>();
 					for(int i = 0; i < passengerBE.receivedFlights.size(); i++)
-						DLM.addElement(passengerBE.receivedFlights.get(i));
+						DLM.addElement(passengerBE.receivedFlights.get(i).toDisplay());
 					flightList.setModel(DLM);
 				}
 				else{
+					flightList.removeAll();
+					passengerBE.receivedFlights.clear();
 					JOptionPane.showMessageDialog(frmPassengerApplication.getComponent(0), message);
 				}
 			}
@@ -188,6 +193,7 @@ public class PassengerGUI {
 				cBoxFlightParam.setSelectedIndex(-1);
 				flightList.setSelectedIndex(-1);
 				flightList.removeAll();
+				passengerBE.receivedFlights.clear();
 			}
 		});
 		btnClear.setBounds(252, 59, 123, 32);
@@ -212,13 +218,15 @@ public class PassengerGUI {
 					message = passengerBE.searchFlights("source", flightSearchField.getText());
 				}
 				if(message.equals("GOOD")) {
-					DefaultListModel<Flight> DLM = new DefaultListModel<Flight>();
+					DefaultListModel<String> DLM = new DefaultListModel<String>();
 					for(int i = 0; i < passengerBE.receivedFlights.size(); i++)
-						DLM.addElement(passengerBE.receivedFlights.get(i));
+						DLM.addElement(passengerBE.receivedFlights.get(i).toDisplay());
 					flightList.setModel(DLM);
 				}
 				else{
-					JOptionPane.showMessageDialog(frmPassengerApplication.getComponent(0), message);
+					flightList.removeAll();
+					passengerBE.receivedFlights.clear();
+					//JOptionPane.showMessageDialog(frmPassengerApplication.getComponent(0), message);
 				}
 			}
 		});
