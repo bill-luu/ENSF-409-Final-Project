@@ -11,6 +11,7 @@ public class Flight implements Serializable{
 	private String totalSeats;
 	private String availableSeats;
 	private String price;
+	static final long serialVersionUID = 2L;
 	
 	public Flight(String fId, String dest, String src, String dateOF, String timeOF, String durOF, String tS, String aS, String prc){
 		flightId = fId;
