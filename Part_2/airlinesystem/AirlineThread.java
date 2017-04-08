@@ -8,13 +8,35 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+/**
+ * The individual thread each client uses. Recieves messages from the socket and performs operations on the database.
+ * @author Bill Luu, Mark Ricalde, Travis Manchee
+ *
+ */
 public class AirlineThread implements Runnable {
 
+	/**
+	 * The socket the thread uses
+	 */
 	Socket socket;
+	/**
+	 * The database the thread interacts with
+	 */
 	Database database;
+	/**
+	 * The Stream for input to the Socket
+	 */
 	private ObjectInputStream inputObject;
+	/**
+	 * The Stream for output from the socket
+	 */
 	private ObjectOutputStream outputObject;
 	
+	/**
+	 * Initializes the thread. Makes the Object streams and assigns the socket/database
+	 * @param socket
+	 * @param database
+	 */
 	public AirlineThread(Socket socket, Database database)
 	{
 		this.socket = socket;
@@ -30,6 +52,13 @@ public class AirlineThread implements Runnable {
 		}
 	}
 
+	/**
+	 * Checks if the response is properly parsed.
+	 * @param response
+	 * @param expectedArgs The amount of arguments there should be
+	 * @return true if the amount of arguments is expected, false otherwise
+	 * @throws IOException
+	 */
 	public boolean isValidResponse(String[] response, int expectedArgs) throws IOException
 	{
 		if(response.length != expectedArgs) //Check if the number of arguments are correct.
@@ -40,6 +69,10 @@ public class AirlineThread implements Runnable {
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Runnable#run()
+	 * Parses the response from the client, and calls the appropriate database action.
+	 */
 	@Override
 	public void run() {
 		boolean isRunning = true;
