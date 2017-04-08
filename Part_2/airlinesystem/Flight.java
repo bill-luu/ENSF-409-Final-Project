@@ -2,6 +2,9 @@ package airlinesystem;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 
+/**
+ * The flight class used to create flight objects
+ */
 public class Flight implements Serializable{
 	private String flightId;
 	private String destination;
@@ -13,7 +16,19 @@ public class Flight implements Serializable{
 	private String availableSeats;
 	private String price;
 	static final long serialVersionUID = 2L;
-	
+
+	/**
+	 * Flight constructor used when adding a flightID
+	 * @param fId The flight ID
+	 * @param dest The destination of the flight
+	 * @param src The initial location of the flight
+	 * @param dateOF The date the flight leaves
+	 * @param timeOF The time the flight leaves
+	 * @param durOF The duration of the flight
+	 * @param tS The number of total seats
+	 * @param aS The number of remaining seats
+	 * @param prc The price of the flight
+	 */
 	public Flight(String fId, String dest, String src, String dateOF, String timeOF, String durOF, String tS, String aS, String prc){
 		flightId = fId;
 		destination = dest;
@@ -25,6 +40,17 @@ public class Flight implements Serializable{
 		availableSeats = aS;
 		price = prc;
 	}
+
+	/**
+	 * The flight constructor without the flight ID
+	 * @param dest The destination of the flight
+	 * @param src The initial location of the flight
+	 * @param dateOF The date the flight leaves
+	 * @param timeOF The time the flight leaves
+	 * @param durOF The duration of the flight
+	 * @param tS The number of total seats
+	 * @param prc The price of the flight
+	 */
 	public Flight(String dest, String src, String dateOF, String timeOF, String durOF, String tS, String prc){
 		destination = dest;
 		source = src;
@@ -34,17 +60,28 @@ public class Flight implements Serializable{
 		totalSeats = tS;
 		price = prc;
 	}
-	
+
+	/**
+	 * The string displayed to the GUI
+	 * @return The string information of the flight sent to the GUI
+	 */
 	public String toDisplay(){
 		return flightId + "  " + destination + "  " + source + "  " + "  " + dateOfFlight;
 	}
-	
+
+	/**
+	 * If a flight has availble seats
+	 * @return True if a flight has availble seats, false otherwise
+	 */
 	public boolean hasAvailableSeats(){
 		if(Integer.getInteger(availableSeats) <= 0)
 			return false;
 		return true;
 	}
-	
+
+	/**
+	 * Setters and Getters
+	 */
 	public String getFlightId(){
 		return flightId;
 	}

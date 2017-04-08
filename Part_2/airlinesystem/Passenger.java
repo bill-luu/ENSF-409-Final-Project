@@ -7,14 +7,17 @@ import java.util.Date;
 
 public class Passenger {
     protected PrintWriter ticketWriter;
-//    protected PrintWriter socketOut;
     protected Socket socket;
-//    protected BufferedReader socketIn;
     protected ObjectOutputStream outputStream;
     protected ObjectInputStream inputStream;
     public ArrayList<Flight> receivedFlights;
 
 
+    /**
+     * The Passenger class
+     * @param serverName The host name/IP address
+     * @param portNumber The port number
+     */
     public Passenger(String serverName, int portNumber) {
         try {
             socket = new Socket(serverName, portNumber);
@@ -30,7 +33,7 @@ public class Passenger {
     }
 
     /**
-     *
+     *Function to search for flights
      * @param param The paramater being searched for
      * @param key The key used for the search
      * @return The object searched for
@@ -60,13 +63,16 @@ public class Passenger {
         }
     }
 
+    /**
+     * The function to get the list of flights
+     * @return "GOOD" when flights exist, No flights could be found when no flights are found
+     */
     public String getFlights() {
         String response = "";
         try {
             outputStream.writeObject((String)"GETFLIGHTS_");
             response = (String)inputStream.readObject();
             if (response.equals("GOOD")) {
-                //inputStream = new ObjectInputStream(socket.getInputStream());
                 receivedFlights = (ArrayList<Flight>)inputStream.readObject();
                 return "GOOD";
             }
@@ -84,6 +90,13 @@ public class Passenger {
         }
     }
 
+    /**
+     * Function used to book a ticket
+     * @param firstName The passenger's first name
+     * @param lastName The passenger's last name
+     * @param flightNumber The flight number of the flight they wish to book
+     * @return
+     */
     public String bookTicket(String firstName, String lastName, String flightNumber) {
         String response = "";
         String format = checkFormatTicketAdd(firstName, lastName);
@@ -118,6 +131,10 @@ public class Passenger {
         }
     }
 
+    /**
+     * Function used to print the ticket
+     * @param ticketA The ticket used to be printed
+     */
     public void printTicket(Ticket ticketA) {
 
         try {
@@ -140,7 +157,12 @@ public class Passenger {
             System.err.println(e.getStackTrace());
         }
     }
-    
+
+    /**
+     * Checks if a string is a number
+     * @param toTest String to parse and test
+     * @return true when it is, false if not
+     */
     public boolean isNum(String toTest){
 		 try { 
 		        Integer.parseInt(toTest); 
@@ -149,7 +171,12 @@ public class Passenger {
 		    }
 		    return true;
 	}
-    
+
+    /**
+     * Function to check if date entered is valid
+     * @param date The date checked by the system
+     * @return True when a valid date, false when not
+     */
     public boolean isValidDate(String date){
 		//code obtained and edited from http://stackoverflow.com/questions/15491894/regex-to-validate-date-format-dd-mm-yyyy
 		if(!date.matches("^(?=\\d{2}([/])\\d{2}\\1\\d{4}$)(?:0[1-9]|1\\d|[2][0-8]|29(?!.02.(?!(?!(?:[02468][1-35-79]|[13579]"
@@ -167,6 +194,12 @@ public class Passenger {
 		return true;
 	}
 
+    /**
+     * Checks the format of the flight search
+     * @param param The parameter searched for
+     * @param key The key searched for
+     * @return Nothing if good, the error(s) if found
+     */
     public String checkFormatFlightSearch(String param, String key){
     	String toReturn = "";
     	switch (param){
@@ -193,6 +226,12 @@ public class Passenger {
     	return toReturn;	
     }
 
+    /**
+     * Checks for the format of the ticket
+     * @param firstName The first name of the passenger
+     * @param lastName The last name of the passennger
+     * @return "GOOD FORMAT" when format is good or the error whe  not
+     */
     public String checkFormatTicketAdd(String firstName, String lastName) {
         String toReturn="";
 		boolean badFormat = false;
@@ -213,13 +252,14 @@ public class Passenger {
 		return "GOOD FORMAT";
     }
 
+    /**
+     * Used when closing the GUI, closes all streams
+     */
     public void quitServer()
     {
         try{
             outputStream.writeObject((String)"QUIT_");
             socket.close();
-//            socketIn.close();
-//            socketOut.close();
             outputStream.close();
             inputStream.close();
         }
