@@ -9,13 +9,28 @@ import java.util.Date;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+/**
+ * The admin class, which extends from Passenger. Used to provice a backend
+ * to the AdminGUI.
+ */
 public class Admin extends Passenger {
 	public ArrayList<Ticket> receivedTickets;
-	
+
+	/**
+	 * Constructor for Admin, based of Passenger
+	 * @param serverName The server name/ IP Address
+	 * @param portNumber The port number
+	 */
 	public Admin(String serverName, int portNumber){
 		super(serverName, portNumber);
 	}
-	
+
+	/**
+	 * Used to check the format of a ticket
+	 * @param param The parameter used to determine what category the user is searching
+	 * @param key The key used to search the database
+	 * @return Returns nothing if no error occurs and the error message if it does
+	 */
 	 public String checkFormatTicketSearch(String param, String key){
 	    	String toReturn = "";
 	    	switch (param){
@@ -37,7 +52,12 @@ public class Admin extends Passenger {
 	    	}
 	    	return toReturn;	
 	    }
-	
+
+	/**
+	 * Used to check a format of a flight
+	 * @param flightToCheck The flight to check
+	 * @return Returns "GOOD FORMAT" if format is good or an error message if they happen
+	 */
 	public String checkFormatFlightAdd(Flight flightToCheck){
 		String toReturn="";
 		boolean badFormat = false;
@@ -88,7 +108,13 @@ public class Admin extends Passenger {
 		}
 		return "GOOD FORMAT";
 	}
-		
+
+	/**
+	 * Funnctionn to search tickets
+	 * @param param The parameter/category searched for
+	 * @param key The key searched for
+	 * @return
+	 */
 	 public String searchTickets(String param, String key) {
 	        String response = "";
 	        String format = checkFormatTicketSearch(param, key);
@@ -123,7 +149,11 @@ public class Admin extends Passenger {
 	        }
 	    }
 
-	    public String getTickets() {
+	/**
+	 * Used to refresh to get all the tickets
+	 * @return GOOD if tickets exist, an error message if not
+	 */
+	public String getTickets() {
 	        String response = "";
 
 	        try {
@@ -156,7 +186,12 @@ public class Admin extends Passenger {
 	        	return "Other error occured";
 	        }
 	    }
-	
+
+	/**
+	 * Function used to add a flight
+	 * @param flightToAdd A flight based on admin-inputted information
+	 * @return An all good if the function goes without errors or an error if found
+	 */
 	public String addFlight(Flight flightToAdd){
 		String toReturn = checkFormatFlightAdd(flightToAdd);
 		if(toReturn.contains("ERROR"))
@@ -173,8 +208,13 @@ public class Admin extends Passenger {
 	            e.printStackTrace();
 	            return "An IO Exception occured...";
 	        }
-	} 
-	
+	}
+
+	/**
+	 * Deletes a ticket in the database
+	 * @param ticketNumber The ticket number of the ticket to be deleted
+	 * @return An all good if the function goes without errors or an error if found
+	 */
 	public String deleteTicket(String ticketNumber){
 		String response = "";
 		try{
@@ -186,7 +226,12 @@ public class Admin extends Passenger {
             return "An IO Exception occured...";  
 		}
 	}
-	
+
+	/**
+	 * Loads a flight from a textfile
+	 * @param fileName The name of the file
+	 * @return An all good if the function goes without errors or an error if found
+	 */
 	public String loadFlights(String fileName){
 		String response;
 		try{
