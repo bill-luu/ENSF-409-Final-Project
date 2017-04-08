@@ -8,19 +8,46 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+
+/**
+ * @author Bill Luu, Mark Ricalde, Travis Manchee
+ * Provides the server interaction with the mySQL Database. 
+ * 
+ */
+
 public class Database {
+	
+	/**
+	 * A unique flight ID, will be the highest id not yet taken.
+	 */
 	int uniqueFlightId;
+	/**
+	 * A unique Ticket ID, is the highest id not yet taken.
+	 */
 	int uniqueTicketId;
 
+	
+	/**
+	 * The connection to the database
+	 */
 	private Connection connection;
+	/**
+	 * The statement to send to the database
+	 */
 	private Statement stmt;
 	
+	/**
+	 * Initializes the Database
+	 */
 	public Database()
 	{
 		initializeConnection();
 		initializeIds();
 	}
 	
+	/**
+	 * Initializes the connection to database
+	 */
 	public void initializeConnection()
 	{
 		try 
@@ -33,7 +60,11 @@ public class Database {
 			System.exit(1);
 		}
 	}
-
+	
+	/**
+	 * Sets the IDs to be Unique
+	 * Runs through the database and sets the IDs to be the highest one
+	 */
 	public void initializeIds()
 	{
 		//Parse through flight ID
@@ -87,6 +118,12 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Searches through all the flights and returns an ArrayList that contains flights containing the key for the param.
+	 * @param param The parameter to check
+	 * @param key The value the parameter should have
+	 * @return An ArrayList of flights matching the param/key, null if an exception was raised
+	 */
 	synchronized ArrayList<Flight> searchFlight(String param, String key)
 	{
 		ResultSet rs;
@@ -118,6 +155,10 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Returns an ArrayList of all the flights in the database
+	 * @return An Arraylist of all flights, null if an exception occured.
+	 */
 	synchronized ArrayList<Flight> getAllFlights()
 	{
 		ResultSet rs;
@@ -149,6 +190,12 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Updates the amount of seats in a flight.
+	 * @param flight The flight to be updated
+	 * @param changeInRemainingSeats The number of seats being added/removed
+	 * @throws SeatException If a flight with no seats available is being booked, then this is thrown
+	 */
 	synchronized void changeSeats(Flight flight, int changeInRemainingSeats) throws SeatException
 	{
 		try{
@@ -184,6 +231,11 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Returns the flight with a specific ID
+	 * @param flightId 
+	 * @return Flight with id flightId
+	 */
 	synchronized Flight getFlight(String flightId)
 	{
 		ResultSet rs;
@@ -210,6 +262,11 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Adds a ticket to the database
+	 * @param ticket The ticket to be added
+	 * @return The ticket that was added, with proper ID, null when exception was raised
+	 */
 	synchronized Ticket addTicket(Ticket ticket)
 	{
 		try{
@@ -243,6 +300,11 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Adds a Flight to the database
+	 * @param flight Flight to be added
+	 * @return Confirmation String or error string
+	 */
 	synchronized String addFlight(Flight flight)
 	{
 		try{	
@@ -272,6 +334,11 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * Delete a ticket from the database
+	 * @param ticketId 
+	 * @return Confirmation/Error String
+	 */
 	synchronized String deleteTicket(String ticketId)
 	{
 		try
@@ -291,7 +358,12 @@ public class Database {
 			return "Unable to remove booking";
 		}
 	}
-
+	
+	/**
+	 * Returns a Ticket based on ID
+	 * @param ticketId
+	 * @return A ticket with ID ticketID, null if exception was raised.
+	 */
 	synchronized Ticket getTicket(String ticketId)
 	{
 		ResultSet rs;
@@ -316,6 +388,10 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Removes a flight from the database
+	 * @param flightId The id of the flight to be removed
+	 */
 	synchronized void deleteFlight(String flightId)
 	{
 		try
@@ -330,6 +406,12 @@ public class Database {
 			err.printStackTrace();
 		}
 	}
+	/**
+	 * Searches through all the tickets and returns an ArrayList that contains tickets containing the key for the param.
+	 * @param param The parameter to check
+	 * @param key The value the parameter should have
+	 * @return An ArrayList of tickets matching the param/key, null if an exception was raised
+	 */
 	synchronized ArrayList<Ticket> searchTicket(String param, String key)
 	{
 		ResultSet rs;
@@ -357,6 +439,10 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * Returns an arraylist of all tickets in database
+	 * @return an Arraylist of tickets, null if an exception was raised.
+	 */
 	synchronized ArrayList<Ticket> getAllTickets()
 	{
 		ResultSet rs;
