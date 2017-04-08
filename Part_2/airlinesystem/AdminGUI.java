@@ -101,7 +101,7 @@ public class AdminGUI {
 		
 		frmAdminApplication = new JFrame();
 		frmAdminApplication.setResizable(false);
-		frmAdminApplication.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frmAdminApplication.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmAdminApplication.addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -358,7 +358,7 @@ public class AdminGUI {
 		
 		JComboBox<String> cBoxFlightParam = new JComboBox<String>();
 		cBoxFlightParam.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		cBoxFlightParam.setModel(new DefaultComboBoxModel(new String[] {"Flight Id Number", "Destination Location", "Departure Location", "Date of Departure"}));
+		cBoxFlightParam.setModel(new DefaultComboBoxModel<String>(new String[] {"Flight Id Number", "Destination Location", "Departure Location", "Date of Departure"}));
 		cBoxFlightParam.setBounds(10, 57, 236, 32);
 		cBoxFlightParam.setSelectedIndex(-1);
 		browseFlightPanel.add(cBoxFlightParam);
@@ -393,6 +393,7 @@ public class AdminGUI {
 				}
 				else{
 					flightList.removeAll();
+					flightList.setModel(new DefaultListModel<String>());
 					adminBE.receivedFlights.clear();
 					JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
 				}
@@ -414,6 +415,7 @@ public class AdminGUI {
 				cBoxFlightParam.setSelectedIndex(-1);
 				flightList.setSelectedIndex(-1);
 				flightList.removeAll();
+				flightList.setModel(new DefaultListModel<String>());
 				adminBE.receivedFlights.clear();
 
 			}
@@ -438,6 +440,9 @@ public class AdminGUI {
 				else if(cBoxFlightParam.getSelectedIndex() == 2){
 					message = adminBE.searchFlights("source", flightSearchField.getText());
 				}
+				else if(cBoxFlightParam.getSelectedIndex() == 3){
+					message = adminBE.searchFlights("date", flightSearchField.getText());
+				}
 				if(message.equals("GOOD")) {
 					DefaultListModel<String> DLM = new DefaultListModel<String>();
 					for(int i = 0; i < adminBE.receivedFlights.size(); i++){
@@ -448,6 +453,7 @@ public class AdminGUI {
 				}
 				else{
 					flightList.removeAll();
+					flightList.setModel(new DefaultListModel<String>());
 					adminBE.receivedFlights.clear();
 					//JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
 				}
@@ -770,6 +776,7 @@ public class AdminGUI {
 				}
 				else{
 					ticketList.removeAll();
+					ticketList.setModel(new DefaultListModel<String>());
 					adminBE.receivedTickets.clear();
 					JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
 				}
@@ -787,6 +794,7 @@ public class AdminGUI {
 				cBoxTicketParam.setSelectedIndex(-1);
 				ticketList.setSelectedIndex(-1);
 				ticketList.removeAll();
+				ticketList.setModel(new DefaultListModel<String>());
 				adminBE.receivedTickets.clear();
 			}
 		});
@@ -818,6 +826,7 @@ public class AdminGUI {
 				}
 				else{
 					ticketList.removeAll();
+					ticketList.setModel(new DefaultListModel<String>());
 					adminBE.receivedTickets.clear();
 					//JOptionPane.showMessageDialog(frmAdminApplication.getComponent(0), message);
 				}

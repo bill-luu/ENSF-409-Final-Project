@@ -1,5 +1,6 @@
 package airlinesystem;
 import java.io.Serializable;
+import java.text.DecimalFormat;
 
 public class Flight implements Serializable{
 	private String flightId;
@@ -35,13 +36,7 @@ public class Flight implements Serializable{
 	}
 	
 	public String toDisplay(){
-		String paddedDest = this.destination;
-		String paddedSrc = this.source;
-		while(paddedDest.length() != 45)
-			paddedDest += " ";
-		while(paddedSrc.length() != 45)
-			paddedSrc += " ";
-		return this.flightId + "  " + paddedDest + "  " + paddedSrc + "  " + this.dateOfFlight;
+		return flightId + "  " + destination + "  " + source + "  " + "  " + dateOfFlight;
 	}
 	
 	public boolean hasAvailableSeats(){
@@ -80,6 +75,7 @@ public class Flight implements Serializable{
 	public String getTaxedPrice(){
 		Double prc = Double.parseDouble(price);
 		prc *= 1.07;
-		return prc.toString();
+		String toReturn = String.format("%.2f", prc);
+		return toReturn;
 	}
 }
